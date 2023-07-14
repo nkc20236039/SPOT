@@ -4,6 +4,8 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
+// 参照が必要なものにつけるアトリビュート：[NotNull]
+
 namespace CheckNullReferenceWhenStartEditor
 {
     [InitializeOnLoad]

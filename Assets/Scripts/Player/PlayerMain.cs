@@ -16,6 +16,7 @@ public class PlayerMain : MonoBehaviour
 
     void Update()
     {
-        movementScript.WarkSpeed(inputScript.moveDir);
+        // プレイヤー左右移動
+        movementScript.WalkSpeed(inputScript.moveDir);
     }
 }

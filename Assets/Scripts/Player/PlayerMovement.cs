@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    public void WarkSpeed(float dir)
+    public void WalkSpeed(float dir)
     {
         vel = rb2D.velocity;
         vel.x = m_speed * dir;

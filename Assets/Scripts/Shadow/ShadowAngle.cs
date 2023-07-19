@@ -21,11 +21,9 @@ public class ShadowAngle : MonoBehaviour
         // 影が有効なら影の淵にコライダーをつける
         if (shadowCollider.enabled )
         {
-            Vector3 lightDir = transform.position - transform.position;
-            // Quaternion(回転値)を取得
-            Quaternion quaternion = Quaternion.LookRotation(lightDir);
-            // 算出した回転値をこのゲームオブジェクトのrotationに代入
-            transform.rotation = quaternion;
+            Vector3 lightDir = spotLight.transform.position - transform.position;
+            // ライトのある方向を向く
+            transform.rotation = Quaternion.FromToRotation(Vector3.left, lightDir);
         }
     }
 }

@@ -7,7 +7,8 @@ public class LightCheck : MonoBehaviour
     private Vector3 rayStart;
     private Vector3 lightPos;
     private ShadowAngle shadowAngleScript;
-    [SerializeField] private LayerMask lMask;
+    [SerializeField] private LayerMask[] lMask;
+    RaycastHit2D result;
 
     void Start()
     {
@@ -22,15 +23,18 @@ public class LightCheck : MonoBehaviour
     {
         lightPos = shadowAngleScript.spotLight.transform.position;
         // RayÇÃStartÇê›íË
-        Vector3 lightDir = Vector3.ClampMagnitude(lightPos, -0.05f);
+        Vector3 lightDir = Vector3.ClampMagnitude(lightPos, 0.01f);
         rayStart = transform.position + lightDir;
 
         // Rayî≠éÀ
-        RaycastHit2D result;
-        result = Physics2D.Linecast(rayStart, lightPos, lMask);
+        for(int i = 0;i < lMask.Length; i++)
+        {
+            result = Physics2D.Linecast(rayStart, lightPos, lMask[i]);
+            if(result) break;
+        }
 
         // Rayï\é¶
-        if (result) Debug.DrawLine(rayStart, result.point, Color.magenta);
+        if (result) Debug.DrawLine(rayStart, result.point, Color.red);
         else Debug.DrawLine(rayStart, lightPos, Color.magenta);
 
         return result;

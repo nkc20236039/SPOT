@@ -26,4 +26,9 @@ public class PlayerMovement : MonoBehaviour
         vel.x = m_speed * dir;
 
     }
+
+    private void GroundState()
+    {
+
+    }
 }

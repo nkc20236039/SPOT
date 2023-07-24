@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         // ˆÚ“®‘¬“x‚ð“K—p
         rb2D.velocity = vel;
@@ -29,6 +29,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void GroundState()
     {
-
+        
     }
 }

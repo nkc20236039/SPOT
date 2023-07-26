@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    public float moveDir { get; private set; }
-    public bool isJump { get; private set; }
+    private float moveDir;
 
-    public void InputInit()
+
+    public enum getButton
     {
-        moveDir = 0;
-        isJump = false;
+        Jump,
+
     }
 
-    void Update()
+    /// <summary>
+    /// 移動するキー方向の取得
+    /// </summary>
+    /// <returns></returns>
+    public float Walk()
     {
-        InputInit();
+        return Input.GetAxisRaw("Horizontal");
+    }
 
-        // 移動方向入力
-        moveDir = Input.GetAxisRaw("Horizontal");
-
-        // ジャンプ入力
-        if (Input.GetButtonDown("Jump"))
-        {
-            isJump = true;
-        }
+    public bool IsPressingButton(getButton inputKey)
+    {
+        return Input.GetButton(inputKey.ToString());
     }
 }

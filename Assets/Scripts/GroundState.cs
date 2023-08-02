@@ -8,6 +8,7 @@ public class GroundState : MonoBehaviour
     [SerializeField] private LayerMask layerMask;       // レイヤーマスク
     [SerializeField] private Vector3 rayRelativePos;    // 最初のプレイヤーからの相対ポジション
     private Vector3 rayOrigin;
+    private Vector3 groundNormal;
 
     public bool isGround()
     {
@@ -26,8 +27,11 @@ public class GroundState : MonoBehaviour
             // 次の検索位置へ
             rayOrigin.x += -rayRelativePos.x;
 
+            // 地面にいるか
             if (hit.collider != null)
             {
+                // 法線ベクトル代入
+                groundNormal = hit.normal;
                 return true;
             }
         }
@@ -36,27 +40,19 @@ public class GroundState : MonoBehaviour
     }
 
     /// <summary>
-    /// 坂を登る時の処理
+    /// 坂の移動制限
     /// </summary>
-    /// <param name="hit"></param>
-    /// <returns>Vector3</returns>
-    public Vector3 SlopeGoUp(RaycastHit2D hit)
+    /// <param name="vector"></param>
+    /// <returns></returns>
+    public Vector3 Slope(Vector3 vector)
     {
+        if(isGround())
+        {
+            // 斜面のベクトルを求める
+            return Vector3.ProjectOnPlane(vector, groundNormal);
+        }
 
-
-        return new Vector3(0, 0, 0);
-    }
-
-    /// <summary>
-    /// 坂を下る時の処理
-    /// </summary>
-    /// <param name="hit"></param>
-    /// <returns>Vector3</returns>
-    public Vector3 SlopeGoDown(RaycastHit2D hit)
-    {
-
-
-        return new Vector3(0, 0, 0);
+        return vector;
     }
 
 }

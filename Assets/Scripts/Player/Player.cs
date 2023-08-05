@@ -19,8 +19,15 @@ public partial class Player : MonoBehaviour
     void Update()
     {
         // 入力チェック
-        moveInput = Input.GetAxisRaw("Horizontal");
-        if (Input.GetButtonDown("Jump")) { isJump = true; }
+        moveInput = Input.GetAxisRaw("Horizontal");                         // 左右キー
+        if (Input.GetButtonDown("Jump") && groundStateScript.isGround())    // ジャンプキー
+        { 
+            isJump = true; 
+        }
+        if (Input.GetButtonDown("Switch Spot Light"))                       // ライトの切り替えキー
+        { 
+            SwitchSpotLight(); 
+        }
     }
 
     void FixedUpdate()

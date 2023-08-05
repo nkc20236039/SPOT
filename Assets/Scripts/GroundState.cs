@@ -10,6 +10,10 @@ public class GroundState : MonoBehaviour
     private Vector3 rayOrigin;
     private Vector3 groundNormal;
 
+    /// <summary>
+    /// 地面判定
+    /// </summary>
+    /// <returns>bool</returns>
     public bool isGround()
     {
         // 初期スタート位置
@@ -19,10 +23,10 @@ public class GroundState : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             RaycastHit2D hit;
-            hit = Physics2D.Raycast(rayOrigin, Vector3.down, 0.1f, layerMask);
+            hit = Physics2D.Raycast(rayOrigin, Vector3.down, 0.01f, layerMask);
 
             // デバッグ
-            if (debug) { Debug.DrawRay(rayOrigin, Vector3.down * 0.1f, Color.yellow); }
+            if (debug) { Debug.DrawRay(rayOrigin, Vector3.down * 0.01f, Color.yellow); }
 
             // 次の検索位置へ
             rayOrigin.x += -rayRelativePos.x;

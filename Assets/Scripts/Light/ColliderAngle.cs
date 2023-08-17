@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShadowAngle : MonoBehaviour
+public class ColliderAngle : MonoBehaviour
 {
     [SerializeField] LayerMask layerMask;
     [SerializeField] bool debug = false;
@@ -11,20 +11,6 @@ public class ShadowAngle : MonoBehaviour
     {
         UpdateShadowPoints();
     }
-
-    //void Update()
-    //{
-    //    // ライトの光が当たらなければコライダーをオフにする
-    //    shadowCollider.enabled = !lightCheckScript.IsLightHit();
-
-    //    // 影が有効なら影の淵にコライダーをつける
-    //    if (shadowCollider.enabled )
-    //    {
-    //        Vector3 lightDir = spotLight.transform.position - transform.position;
-    //        // ライトのある方向を向く
-    //        transform.rotation = Quaternion.FromToRotation(Vector3.left, lightDir);
-    //    }
-    //}
 
     void Update()
     {

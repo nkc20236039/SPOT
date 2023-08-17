@@ -80,7 +80,7 @@ public partial class Player
         {
             // ライトを持っていない時の処理
             // 全てのライトをアレイに入れる
-            GameObject[] light = GameObject.FindGameObjectsWithTag("Light");
+            GameObject[] light = GameObject.FindGameObjectsWithTag("EnableLight");
             GameObject nearestObject = null;
             float nearestDistance = pickReach;
 

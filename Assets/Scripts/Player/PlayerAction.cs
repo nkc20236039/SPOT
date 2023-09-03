@@ -16,6 +16,7 @@ public partial class Player
     [Header("ライトに関わる変数")]
     [SerializeField] private float pickReach;       // 拾える範囲
     [SerializeField] private Vector3 parentPos;     // 持っている時のプレイヤーからの距離
+    [SerializeField] private GameObject[] spotlight;// シーンに存在するスポットライト
 
     /// <summary>
     /// プレイヤーの動く
@@ -80,7 +81,7 @@ public partial class Player
         {
             // ライトを持っていない時の処理
             // 全てのライトをアレイに入れる
-            GameObject[] light = GameObject.FindGameObjectsWithTag("EnableLight");
+            GameObject[] light = GameObject.FindGameObjectsWithTag("Light");
             GameObject nearestObject = null;
             float nearestDistance = pickReach;
 
@@ -115,6 +116,22 @@ public partial class Player
                 // 無かった場合のメッセージを送る
                 Debug.Log("近くにライトが無い\n--UI作成時に画面に表示するようにする");
             }
+        }
+    }
+
+    private void SwitchSpotLight(int lightNumber)
+    {
+        lightNumber--;
+        if (lightNumber < spotlight.Length)
+        {
+            foreach(GameObject light in spotlight)
+            {
+                if (light.activeSelf)
+                {
+                    light.SetActive(false);
+                }
+            }
+            spotlight[lightNumber].SetActive(true);
         }
     }
 }

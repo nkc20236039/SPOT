@@ -64,7 +64,7 @@ public class MainLightFrame : MonoBehaviour
                 var latestIntersect =
                     FindNearestIntersection(lineStart, lineEnd, exclusionLight.ToArray());
 
-               
+
                 SpotLightParameter lightScript = latestIntersect.intersectObject.GetComponent<SpotLightParameter>();
                 if (!lightScript.defaultLight)          // 画面の端についたとき
                 {
@@ -101,7 +101,7 @@ public class MainLightFrame : MonoBehaviour
                             latestIntersect.normal,
                             latestIntersect.intersectObject
                             );
-                    }           
+                    }
                     // 現時点で除外したいオブジェクトを指定
                     exclusionLight.Add(latestIntersect.intersectObject);
                     exclusionLight.RemoveAt(0);
@@ -122,7 +122,7 @@ public class MainLightFrame : MonoBehaviour
                 // 今回の位置をとりあえず記録しておく
                 //points.Insert(0, lineStart);
             }
-            
+
 
 
             // 非常用措置

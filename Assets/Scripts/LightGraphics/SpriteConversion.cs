@@ -5,12 +5,12 @@ using UnityEngine;
 public class SpriteConversion : MonoBehaviour
 {
     [SerializeField]
-    GameObject shadowSprite;
-    SpriteMask mask;
+    private GameObject shadowSprite;
     [SerializeField]
     private RenderTexture renderTexture;
+    SpriteMask mask;
     private Texture2D texture;
-    public Sprite spriteMask { get; private set; }
+    private Sprite spriteMask;
     Camera shadowCamera;
 
     private void Start()
@@ -72,9 +72,8 @@ public class SpriteConversion : MonoBehaviour
             new Vector2(
                 0.5f,
                 0.5f
-                ),
-            100f
+                )
             );
     }
-    
+
 }

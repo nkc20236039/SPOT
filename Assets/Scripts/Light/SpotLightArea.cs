@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class SpotLightArea : MonoBehaviour
@@ -24,9 +26,10 @@ public class SpotLightArea : MonoBehaviour
 
     [Space]
     [SerializeField] private bool rayVisible;
-    [SerializeField] private LayerMask m_layerMask;                         // レイヤーマスク
+    [SerializeField] private LayerMask m_defaultLayerMask;                         // レイヤーマスク
 
     private Vector2 oldPosition;        // 1フレーム前の位置
+    private List<Vector2[]> points = new List<Vector2[]>();  // 影ができる点のリスト
 
     public bool defaultLight { get { return m_defaultLight; } }
     public float spotAngle { get { return m_spotAngle; } }
@@ -41,7 +44,7 @@ public class SpotLightArea : MonoBehaviour
 
     void Update()
     {
-        if (defaultLight)
+        if (defaultLight && oldPosition != lightPosition)
         {
             // ライトの位置
             lightPosition = transform.position;
@@ -51,33 +54,60 @@ public class SpotLightArea : MonoBehaviour
             Vector2 directionASide = Quaternion.Euler(0, 0, m_spotAngle / 2) * forwardDirection;
             Vector2 directionBSide = Quaternion.Euler(0, 0, -m_spotAngle / 2) * forwardDirection;
 
-            hitASide = Physics2D.Raycast(lightPosition, directionASide, Mathf.Infinity, m_layerMask);
-            hitBSide = Physics2D.Raycast(lightPosition, directionBSide, Mathf.Infinity, m_layerMask);
-            // 光の角度
-            lightAngle = directionASide;
+            // ライトの終点を求める
+            hitASide = Physics2D.Raycast(lightPosition, directionASide, Mathf.Infinity, m_defaultLayerMask);
+            hitBSide = Physics2D.Raycast(lightPosition, directionBSide, Mathf.Infinity, m_defaultLayerMask);
+            // リストに保存
+            points.Add(new Vector2[] { lightPosition, hitASide.point });
+            points.Add(new Vector2[] { hitASide.point, lightPosition });
 
-            // 光が当たった場所格納
-            startPosition = new Vector2[2] { lightPosition, lightPosition };
-            endPosition = new Vector2[2] { hitASide.point, hitBSide.point };
-            if (rayVisible)
+            // 角にあるshadowPointを取得
+            GameObject[] shadowPoints = GameObject.FindGameObjectsWithTag("ShadowPoint");
+
+            // ライトの光が届くか調べる
+            foreach (GameObject shadowPoint in shadowPoints)
             {
-                Debug.DrawLine(lightPosition, hitASide.point);
-                Debug.DrawLine(lightPosition, hitBSide.point);
+                // shadowPointの座標
+                Vector2 shadowPointPosition = shadowPoint.transform.position;
+                // 比較するベクトル計算
+                Vector2 standardVector =
+                    (lightPosition -
+                        (forwardDirection +
+                        lightPosition))
+                        .normalized;
+                Vector2 targetVector =
+                    (lightPosition - shadowPointPosition)
+                    .normalized;
+
+                // ライトまでの角度を求める
+                float angle =
+                    Mathf.Acos(Vector2.Dot(standardVector, targetVector)) *
+                    Mathf.Rad2Deg;
+
+                if (angle < spotAngle / 2)
+                {
+                    // 妨げになるオブジェクトがないか調べる
+                    RaycastHit2D hit = Physics2D.Linecast(lightPosition, shadowPointPosition, m_defaultLayerMask);
+
+                    if (!hit)
+                    {
+                        // 当たらなかったときそのオブジェから伸びる影の終点を求める
+
+                    }
+                }
             }
-        }
-        else
-        {
-            startPosition = m_startPosition;
-            endPosition = m_endPosition;
-        }
-
-        if(oldPosition != lightPosition)    // 位置が違ったら実行する
-        {
-
         }
 
         // 最後に今回の位置を保存
         oldPosition = lightPosition;
     }
 
+    /// <summary>
+    /// 現在地から近い順に並び変える
+    /// </summary>
+    /// <param name="origin"></param>
+    private Vector2[] SortByClosest(Vector2 origin, List<Vector2> pointList)
+    {
+        return pointList.OrderBy(point => Vector2.Distance(point, origin)).ToArray();
+    }
 }

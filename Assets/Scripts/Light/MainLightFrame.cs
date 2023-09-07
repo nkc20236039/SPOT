@@ -7,7 +7,7 @@ public class MainLightFrame : MonoBehaviour
 {
     [SerializeField] private bool debug;
 
-    private SpotLightParameter enableLightScript;   // パラメータースクリプト
+    private SpotLightArea enableLightScript;   // パラメータースクリプト
     public ReactiveProperty<GameObject> enableLight =// プレイヤーが動かす有効のライト
         new ReactiveProperty<GameObject>();
     private List<GameObject> exclusionLight =       // 交点を求める時除外するオブジェクト
@@ -26,12 +26,12 @@ public class MainLightFrame : MonoBehaviour
         spotLights = GameObject.FindGameObjectsWithTag("Light");
         enableLight.Subscribe(value =>
             enableLightScript =
-                enableLight.Value.GetComponent<SpotLightParameter>());
+                enableLight.Value.GetComponent<SpotLightArea>());
     }
 
     void Update()
     {
-        enableLightScript = enableLight.Value.GetComponent<SpotLightParameter>();
+        enableLightScript = enableLight.Value.GetComponent<SpotLightArea>();
 
         // ライトに当たっている場合そのライトを取得する
         IsLightHit(enableLight.Value.transform.position, true, true);
@@ -65,7 +65,7 @@ public class MainLightFrame : MonoBehaviour
                     FindNearestIntersection(lineStart, lineEnd, exclusionLight.ToArray());
 
 
-                SpotLightParameter lightScript = latestIntersect.intersectObject.GetComponent<SpotLightParameter>();
+                SpotLightArea lightScript = latestIntersect.intersectObject.GetComponent<SpotLightArea>();
                 if (!lightScript.defaultLight)          // 画面の端についたとき
                 {
 
@@ -145,7 +145,7 @@ public class MainLightFrame : MonoBehaviour
 
     private Vector2 GetLineEndPoint(Vector2 startPoint, Vector2 angle, GameObject targetObject)
     {
-        SpotLightParameter lightScript = targetObject.GetComponent<SpotLightParameter>();
+        SpotLightArea lightScript = targetObject.GetComponent<SpotLightArea>();
         // 終了地点(めっちゃ遠くに設定しておく)
         Vector2 endPoint = startPoint + angle * 10000;
         // 初期化
@@ -206,7 +206,7 @@ public class MainLightFrame : MonoBehaviour
         foreach (GameObject light in spotLights)
         {
             // スクリプト取得
-            SpotLightParameter lightScript = light.GetComponent<SpotLightParameter>();
+            SpotLightArea lightScript = light.GetComponent<SpotLightArea>();
 
             if (skipEnableLight && light == enableLight.Value)
             {
@@ -302,8 +302,8 @@ public class MainLightFrame : MonoBehaviour
             if (!exclusions.Contains(light))
             {
                 // 相手のスクリプト取得
-                SpotLightParameter lightScript =
-                    light.GetComponent<SpotLightParameter>();
+                SpotLightArea lightScript =
+                    light.GetComponent<SpotLightArea>();
                 // 交差点チェック
                 for (int i = 0; i < lightScript.endPosition.Length; i++)
                 {

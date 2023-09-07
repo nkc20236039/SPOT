@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpotLightParameter : MonoBehaviour
+public class SpotLightArea : MonoBehaviour
 {
     // 調整できるパラメータ
-    [SerializeField]
-    private bool m_isSpotLight;
-    [SerializeField]
-    private bool m_defaultLight = true;                     // ライトか他の光の要素か
+    [SerializeField] private bool m_isSpotLight;
+    [SerializeField] private bool m_defaultLight = true;                     // ライトか他の光の要素か
 
     [Header("ライトの設定")]
     [SerializeField] private float m_spotAngle;        // ライトの照らす広さ
@@ -28,7 +26,8 @@ public class SpotLightParameter : MonoBehaviour
     [SerializeField] private bool rayVisible;
     [SerializeField] private LayerMask m_layerMask;                         // レイヤーマスク
 
-    // 受け渡し用
+    private Vector2 oldPosition;        // 1フレーム前の位置
+
     public bool defaultLight { get { return m_defaultLight; } }
     public float spotAngle { get { return m_spotAngle; } }
     public Vector2 forwardDirection { get; private set; }
@@ -38,6 +37,7 @@ public class SpotLightParameter : MonoBehaviour
     public RaycastHit2D hitBSide { get; private set; }
     public Vector2[] startPosition { get; private set; }
     public Vector2[] endPosition { get; private set; }
+
 
     void Update()
     {
@@ -55,7 +55,7 @@ public class SpotLightParameter : MonoBehaviour
             hitBSide = Physics2D.Raycast(lightPosition, directionBSide, Mathf.Infinity, m_layerMask);
             // 光の角度
             lightAngle = directionASide;
-            
+
             // 光が当たった場所格納
             startPosition = new Vector2[2] { lightPosition, lightPosition };
             endPosition = new Vector2[2] { hitASide.point, hitBSide.point };
@@ -70,6 +70,14 @@ public class SpotLightParameter : MonoBehaviour
             startPosition = m_startPosition;
             endPosition = m_endPosition;
         }
+
+        if(oldPosition != lightPosition)    // 位置が違ったら実行する
+        {
+
+        }
+
+        // 最後に今回の位置を保存
+        oldPosition = lightPosition;
     }
 
 }

@@ -114,4 +114,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/TextMesh Pro/Examples & Extras/Scenes/03 - Line Justification.unity
     guid: 21a509e1d3cd49978623fa564adb6f02
+  - enabled: 1
+    path: Assets/Pixel Adventure 1/Scenes/Demo.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Pixel Adventure 2/Scenes/Demo.unity
+    guid: 08d5689e6281c2b41a5f8b7d4b79db0b
   m_configObjects: {}

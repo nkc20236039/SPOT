@@ -41,34 +41,26 @@ public class SpotLightArea : MonoBehaviour
     public Vector2[] startPosition { get; private set; }
     public Vector2[] endPosition { get; private set; }
 
+    private void Start()
+    {
+        // ライトの初期位置など取得
+        LightSetting();
+    }
 
     void Update()
     {
-        if (defaultLight && oldPosition != lightPosition)
+        LightSetting();
+        if (oldPosition != lightPosition)
         {
-            // ライトの位置
-            lightPosition = transform.position;
-            // ライトの向き
-            forwardDirection = Quaternion.Euler(0, 0, m_spotDirection) * Vector2.right;
-            // 光の終点
-            Vector2 directionASide = Quaternion.Euler(0, 0, m_spotAngle / 2) * forwardDirection;
-            Vector2 directionBSide = Quaternion.Euler(0, 0, -m_spotAngle / 2) * forwardDirection;
-
-            // ライトの終点を求める
-            hitASide = Physics2D.Raycast(lightPosition, directionASide, Mathf.Infinity, m_defaultLayerMask);
-            hitBSide = Physics2D.Raycast(lightPosition, directionBSide, Mathf.Infinity, m_defaultLayerMask);
-            // リストに保存
-            points.Add(new Vector2[] { lightPosition, hitASide.point });
-            points.Add(new Vector2[] { hitASide.point, lightPosition });
-
+            // ライトの設定をする
             // 角にあるshadowPointを取得
-            GameObject[] shadowPoints = GameObject.FindGameObjectsWithTag("ShadowPoint");
+            GameObject[] shadowCorners = GameObject.FindGameObjectsWithTag("ShadowPoint");
 
             // ライトの光が届くか調べる
-            foreach (GameObject shadowPoint in shadowPoints)
+            foreach (GameObject shadowCorner in shadowCorners)
             {
                 // shadowPointの座標
-                Vector2 shadowPointPosition = shadowPoint.transform.position;
+                Vector2 shadowCornerPosition = shadowCorner.transform.position;
                 // 比較するベクトル計算
                 Vector2 standardVector =
                     (lightPosition -
@@ -76,7 +68,7 @@ public class SpotLightArea : MonoBehaviour
                         lightPosition))
                         .normalized;
                 Vector2 targetVector =
-                    (lightPosition - shadowPointPosition)
+                    (lightPosition - shadowCornerPosition)
                     .normalized;
 
                 // ライトまでの角度を求める
@@ -87,19 +79,59 @@ public class SpotLightArea : MonoBehaviour
                 if (angle < spotAngle / 2)
                 {
                     // 妨げになるオブジェクトがないか調べる
-                    RaycastHit2D hit = Physics2D.Linecast(lightPosition, shadowPointPosition, m_defaultLayerMask);
+                    RaycastHit2D hit = Physics2D.Linecast(lightPosition, shadowCornerPosition, m_defaultLayerMask);
 
                     if (!hit)
                     {
                         // 当たらなかったときそのオブジェから伸びる影の終点を求める
-
+                        RaycastHit2D endShadowCorner = Physics2D.Raycast(shadowCornerPosition, -lightPosition, m_defaultLayerMask);
+                        // リストに保存する
+                        points.Add(
+                            new Vector2[] {
+                                shadowCornerPosition, 
+                                endShadowCorner.point
+                            });
                     }
                 }
             }
+
+            // 囲うように並び変える
+
         }
 
         // 最後に今回の位置を保存
         oldPosition = lightPosition;
+    }
+
+    private void LightSetting()
+    {
+        // ライトの位置
+        lightPosition = transform.position;
+
+        // 光の終点
+        Vector2 directionASide = Quaternion.Euler(0, 0, m_spotAngle / 2) * transform.right;
+        Vector2 directionBSide = Quaternion.Euler(0, 0, -m_spotAngle / 2) * transform.right;
+
+        // ライトの終点を求める
+        hitASide = Physics2D.Raycast(lightPosition, directionASide, Mathf.Infinity, m_defaultLayerMask);
+        hitBSide = Physics2D.Raycast(lightPosition, directionBSide, Mathf.Infinity, m_defaultLayerMask);
+        
+        // リストに保存
+        points.Add(
+            new Vector2[] {
+                    lightPosition,
+                    hitASide.point
+            });
+        points.Add(
+            new Vector2[] {
+                    hitASide.point,
+                    lightPosition
+            });
+        if (rayVisible)
+        {
+            Debug.DrawLine(lightPosition, hitASide.point);Debug.DrawLine(lightPosition, hitASide.point);
+            Debug.DrawLine(lightPosition, hitASide.point); Debug.DrawLine(lightPosition, hitBSide.point);
+        }
     }
 
     /// <summary>
@@ -110,4 +142,5 @@ public class SpotLightArea : MonoBehaviour
     {
         return pointList.OrderBy(point => Vector2.Distance(point, origin)).ToArray();
     }
+
 }

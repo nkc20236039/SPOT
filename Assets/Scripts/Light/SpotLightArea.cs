@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class SpotLightArea : MonoBehaviour
@@ -12,7 +10,6 @@ public class SpotLightArea : MonoBehaviour
 
     [Header("ライトの設定")]
     [SerializeField] private float m_spotAngle;        // ライトの照らす広さ
-    [SerializeField] private float m_spotDirection;    // ライトの向き
     [Space]
     [Header("ライト以外の時だけの設定")]
     [SerializeField] private Vector2[] m_startPosition;
@@ -21,7 +18,6 @@ public class SpotLightArea : MonoBehaviour
     private void OnValidate()
     {
         m_spotAngle = Mathf.Clamp(m_spotAngle, 0.0f, 180.0f);
-        m_spotDirection = Mathf.Clamp(m_spotDirection, 0.0f, 359.9f);
     }
 
     [Space]
@@ -29,17 +25,11 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private LayerMask m_defaultLayerMask;                         // レイヤーマスク
 
     private Vector2 oldPosition;        // 1フレーム前の位置
-    private List<Vector2[]> points = new List<Vector2[]>();  // 影ができる点のリスト
 
-    public bool defaultLight { get { return m_defaultLight; } }
-    public float spotAngle { get { return m_spotAngle; } }
-    public Vector2 forwardDirection { get; private set; }
-    public Vector2 lightPosition { get; private set; }
-    public Vector2 lightAngle { get; private set; }
-    public RaycastHit2D hitASide { get; private set; }
-    public RaycastHit2D hitBSide { get; private set; }
-    public Vector2[] startPosition { get; private set; }
-    public Vector2[] endPosition { get; private set; }
+    private Vector2 lightPosition;
+    private Vector2 lightAngle;
+    private RaycastHit2D hitASide;
+    private RaycastHit2D hitBSide;
 
     private void Start()
     {
@@ -52,50 +42,38 @@ public class SpotLightArea : MonoBehaviour
         LightSetting();
         if (oldPosition != lightPosition)
         {
-            // ライトの設定をする
-            // 角にあるshadowPointを取得
-            GameObject[] shadowCorners = GameObject.FindGameObjectsWithTag("ShadowPoint");
+            GameObject[] objectEdges = GameObject.FindGameObjectsWithTag("ObjectEdge");
+            List<Vector2> shadowPositionIndex = new List<Vector2>();
+            Dictionary<Vector2, Vector2[]>
+                shadowPosition =
+                new Dictionary<Vector2, Vector2[]>();
+            List<Vector2> allEndOfShadow = new List<Vector2>();
+            List<Vector2> plusendOfShadow = new List<Vector2>();
+            List<Vector2> minusEndOfShadow = new List<Vector2>();
+            List<Vector2> completionPoint = new List<Vector2>();
 
-            // ライトの光が届くか調べる
-            foreach (GameObject shadowCorner in shadowCorners)
+            // 影座標の情報を取得
+            foreach (GameObject objectEdge in objectEdges)
             {
-                // shadowPointの座標
-                Vector2 shadowCornerPosition = shadowCorner.transform.position;
-                // 比較するベクトル計算
-                Vector2 standardVector =
-                    (lightPosition -
-                        (forwardDirection +
-                        lightPosition))
-                        .normalized;
-                Vector2 targetVector =
-                    (lightPosition - shadowCornerPosition)
-                    .normalized;
+                ObjectEdge objectEdgeScript = objectEdge.GetComponent<ObjectEdge>();
 
-                // ライトまでの角度を求める
-                float angle =
-                    Mathf.Acos(Vector2.Dot(standardVector, targetVector)) *
-                    Mathf.Rad2Deg;
-
-                if (angle < spotAngle / 2)
-                {
-                    // 妨げになるオブジェクトがないか調べる
-                    RaycastHit2D hit = Physics2D.Linecast(lightPosition, shadowCornerPosition, m_defaultLayerMask);
-
-                    if (!hit)
+                // 情報をライトの相対座標として受け取る
+                shadowPositionIndex.Add(
+                    gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[1])
+                    );
+                shadowPosition.TryAdd(
+                    gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[1]),
+                    new Vector2[]
                     {
-                        // 当たらなかったときそのオブジェから伸びる影の終点を求める
-                        RaycastHit2D endShadowCorner = Physics2D.Raycast(shadowCornerPosition, -lightPosition, m_defaultLayerMask);
-                        // リストに保存する
-                        points.Add(
-                            new Vector2[] {
-                                shadowCornerPosition, 
-                                endShadowCorner.point
-                            });
+                        gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[0]),
+                        gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[2])
                     }
-                }
+                    );
             }
+            // リストを降順にソートする
+            shadowPositionIndex.Sort((a, b) => b.y.CompareTo(a.y));
 
-            // 囲うように並び変える
+            // 上から順番にリストに入れていく
 
         }
 
@@ -115,32 +93,11 @@ public class SpotLightArea : MonoBehaviour
         // ライトの終点を求める
         hitASide = Physics2D.Raycast(lightPosition, directionASide, Mathf.Infinity, m_defaultLayerMask);
         hitBSide = Physics2D.Raycast(lightPosition, directionBSide, Mathf.Infinity, m_defaultLayerMask);
-        
-        // リストに保存
-        points.Add(
-            new Vector2[] {
-                    lightPosition,
-                    hitASide.point
-            });
-        points.Add(
-            new Vector2[] {
-                    hitASide.point,
-                    lightPosition
-            });
+
         if (rayVisible)
         {
-            Debug.DrawLine(lightPosition, hitASide.point);Debug.DrawLine(lightPosition, hitASide.point);
-            Debug.DrawLine(lightPosition, hitASide.point); Debug.DrawLine(lightPosition, hitBSide.point);
+            Debug.DrawLine(lightPosition, hitASide.point, color: Color.cyan);
+            Debug.DrawLine(lightPosition, hitBSide.point, color: Color.cyan);
         }
     }
-
-    /// <summary>
-    /// 現在地から近い順に並び変える
-    /// </summary>
-    /// <param name="origin"></param>
-    private Vector2[] SortByClosest(Vector2 origin, List<Vector2> pointList)
-    {
-        return pointList.OrderBy(point => Vector2.Distance(point, origin)).ToArray();
-    }
-
 }

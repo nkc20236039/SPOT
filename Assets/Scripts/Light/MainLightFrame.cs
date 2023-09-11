@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using System.Linq;
@@ -36,9 +36,9 @@ public class MainLightFrame : MonoBehaviour
         // ライトに当たっている場合そのライトを取得する
         IsLightHit(enableLight.Value.transform.position, true, true);
 
-        /* 外周の交点を記録する */
-        // 初期値
-        Vector2 lineStart = Vector2.positiveInfinity;                // 交点座標
+        外周の交点を記録する
+       // 初期値
+       Vector2 lineStart = Vector2.positiveInfinity;                // 交点座標
         Vector2 lineEnd = enableLightScript.hitASide.point;
         Vector2 startPosition = enableLight.Value.transform.position;
         exclusionLight.Clear();
@@ -51,7 +51,7 @@ public class MainLightFrame : MonoBehaviour
             if (hittingLight.Count == 0)
             {
                 // 現在の位置が他のライトの範囲外のとき
-                /*---1フレーム一回限りの実行---*/
+                ---1フレーム一回限りの実行-- -
                 if (lineStart.magnitude >= Vector2.positiveInfinity.magnitude - 1)
                 {
                     // currentLocationが初期値の場合有効ライトの座標に設定
@@ -59,7 +59,7 @@ public class MainLightFrame : MonoBehaviour
                     exclusionLight.Add(enableLight.Value);
                     points.Add(lineStart);
                 }
-                /*-----------------------*/
+                -----------------------
                 // 近くの座標を取得
                 var latestIntersect =
                     FindNearestIntersection(lineStart, lineEnd, exclusionLight.ToArray());
@@ -349,4 +349,4 @@ public class MainLightFrame : MonoBehaviour
 
         return (nearestIntersection, nearestNormal, nearestGameObject);
     }
-}
+}*/

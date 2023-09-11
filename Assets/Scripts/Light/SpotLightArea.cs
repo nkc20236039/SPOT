@@ -48,7 +48,7 @@ public class SpotLightArea : MonoBehaviour
                 shadowPosition =
                 new Dictionary<Vector2, Vector2[]>();
             List<Vector2> allEndOfShadow = new List<Vector2>();
-            List<Vector2> plusendOfShadow = new List<Vector2>();
+            List<Vector2> plusEndOfShadow = new List<Vector2>();
             List<Vector2> minusEndOfShadow = new List<Vector2>();
             List<Vector2> completionPoint = new List<Vector2>();
 
@@ -73,14 +73,21 @@ public class SpotLightArea : MonoBehaviour
             // リストを降順にソートする
             shadowPositionIndex.Sort((a, b) => b.y.CompareTo(a.y));
 
-            // 上から順番にリストに入れていく
+            // ライトの最初と最後をとりあえず入れる
+            plusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(lightPosition));
+            plusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(hitASide.point));
+            minusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(hitBSide.point));
 
+            // プラスを上から順に設定する
         }
 
         // 最後に今回の位置を保存
         oldPosition = lightPosition;
     }
 
+    /// <summary>
+    /// ライトの設定、座標の取得
+    /// </summary>
     private void LightSetting()
     {
         // ライトの位置
@@ -100,4 +107,6 @@ public class SpotLightArea : MonoBehaviour
             Debug.DrawLine(lightPosition, hitBSide.point, color: Color.cyan);
         }
     }
+
+
 }

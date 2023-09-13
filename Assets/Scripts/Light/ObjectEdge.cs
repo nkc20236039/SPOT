@@ -8,9 +8,13 @@ public class ObjectEdge : MonoBehaviour
     private LayerMask objectLayerMask;          // オブジェクトのレイヤーマスク
     [SerializeField]
     private GameObject enableLight;             // 有効のライト
+    [SerializeField] bool debug = true;
+    [SerializeField] float radiusAllow;
+
     private Collider2D objectCollider;          // 影ができるポイントの元コライダー
     public bool isEnable { get; private set; }
-    [SerializeField] bool debug = true;
+    SpotLightArea spotLightAreaScript;
+
     // 影の情報
     // 0: 影ができる角の位置
     // 1: カメラフレーム到達点
@@ -20,15 +24,12 @@ public class ObjectEdge : MonoBehaviour
     private void Start()
     {
         objectCollider = transform.root.GetComponent<Collider2D>();
+        spotLightAreaScript = enableLight.GetComponent<SpotLightArea>();
     }
 
-    void Update()
+    public void GetEdgeInformation(GameObject light)
     {
         // 光に当たっていなかったら処理を実行しない
-        if (debug)
-        {
-            Debug.Log(!IsExposedToLight());
-        }
         isEnable = IsExposedToLight();
         if (!isEnable) { return; }
 
@@ -36,7 +37,7 @@ public class ObjectEdge : MonoBehaviour
         shadowSideInfo[0] = transform.position;
 
         Vector2 lightDirection = (
-            enableLight.transform.position
+            light.transform.position
             - transform.position
             ).normalized * 0.1f;
 
@@ -68,16 +69,46 @@ public class ObjectEdge : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// ライトの光が当たっているかを調べる
+    /// </summary>
+    /// <returns>当たっていたらtrue</returns>
     private bool IsExposedToLight()
     {
-        // ライトの方へ少し寄った場所の座標を求める
-        Vector3 lightSidePosition = shadowSideInfo[0];
-        lightSidePosition +=
-            (enableLight.transform.position
-            - lightSidePosition).normalized * 0.1f;
-        // TODO: 正しく影の形を作れないのを直す
-        Debug.DrawLine(lightSidePosition, enableLight.transform.position);
-        return !Physics2D.Linecast(lightSidePosition, enableLight.transform.position, objectLayerMask);
+        Vector2 lightPosition = enableLight.transform.position;
+        Vector2 thisPosition = transform.position;
+        Vector2 direction = (thisPosition - lightPosition).normalized;
+        Vector2 distance = thisPosition - lightPosition;
+        Vector2 rootObjectDirection = (transform.position - transform.root.position).normalized * 0.01f;
+
+
+        // ライトからRayを出す
+        RaycastHit2D objectHit =
+            Physics2D.Raycast
+            (
+                lightPosition - rootObjectDirection,
+                direction,
+                distance.magnitude * 2,
+                objectLayerMask
+            );
+        if (debug)
+        {
+            Debug.DrawLine(lightPosition, objectHit.point);
+        }
+        // 当たった地点とこのオブジェクトまでの距離を求める
+        float hitDistance = (thisPosition - objectHit.point).magnitude;
+
+        // 当たった地点が許容範囲内ならTrueを返す
+        return hitDistance < radiusAllow;
     }
 
+    // ギズモの表示
+    private void OnDrawGizmos()
+    {
+        Gizmos.matrix = transform.localToWorldMatrix;
+
+        Gizmos.color = Color.red;
+        // Rayが当たっても許可する円を表示する
+        Gizmos.DrawWireSphere(Vector2.zero, radiusAllow);
+    }
 }

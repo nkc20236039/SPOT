@@ -8,6 +8,11 @@ public class SpotLightArea : MonoBehaviour
 
     [Header("ライトの設定")]
     [SerializeField] private float m_spotAngle;        // ライトの照らす広さ
+    public float SpotAngle
+    {
+        get { return m_spotAngle; }
+        private set { m_spotAngle = value; }
+    }
 
     private void OnValidate()
     {

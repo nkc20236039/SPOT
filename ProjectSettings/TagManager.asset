@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Light
-  - ShadowPoint
   - EnableLight
+  - ObjectEdge
   layers:
   - Default
   - TransparentFX
@@ -19,7 +19,7 @@ TagManager:
   - ShadowMesh
   - Shadow
   - CameraFrame
-  - ObjectEdge
+  - 
   - Ground
   - LightDeadEnd
   - 

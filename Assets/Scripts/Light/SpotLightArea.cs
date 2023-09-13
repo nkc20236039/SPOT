@@ -24,6 +24,7 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private LayerMask m_defaultLayerMask;  //レイヤーマスク
     [SerializeField] private LayerMask m_frameBetweenLayerMask;  // レイヤーマスク
     [SerializeField] private GameObject cameraFrame;        // カメラフレームのコライダーを取得する用
+    [SerializeField] private float reachColDistance;
 
     private Vector2 oldPosition;        // 1フレーム前の位置
 
@@ -42,6 +43,8 @@ public class SpotLightArea : MonoBehaviour
 
     void Update()
     {
+        // コライダーの広さを設定する
+        SetReachCollider();
         LightSetting();
         if (oldPosition != lightPosition)
         {
@@ -55,23 +58,26 @@ public class SpotLightArea : MonoBehaviour
             List<Vector2> minusEndOfShadow = new List<Vector2>();
             List<Vector2> completionPoint = new List<Vector2>();
 
+
+
             // 影座標の情報を取得
             foreach (GameObject objectEdge in objectEdges)
             {
                 ObjectEdge objectEdgeScript = objectEdge.GetComponent<ObjectEdge>();
 
                 // 情報をライトの相対座標として受け取る
-                if (objectEdgeScript.isEnable)
+                if (objectEdgeScript.IsExposedToLight(gameObject))
                 {
+                    Vector2[] shadowSideInfo = objectEdgeScript.GetEdgeInformation(gameObject.transform);
                     arrivalPoints.Add(
-                    gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[1])
+                    gameObject.transform.InverseTransformPoint(shadowSideInfo[1])
                     );
                     shadowPosition.TryAdd(
-                        gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[1]),
+                        gameObject.transform.InverseTransformPoint(shadowSideInfo[1]),
                         new Vector2[]
                             {
-                                gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[0]),
-                                gameObject.transform.InverseTransformPoint(objectEdgeScript.shadowSideInfo[2])
+                                gameObject.transform.InverseTransformPoint(shadowSideInfo[0]),
+                                gameObject.transform.InverseTransformPoint(shadowSideInfo[2])
                             }
                         );
                 }
@@ -124,7 +130,21 @@ public class SpotLightArea : MonoBehaviour
         }
     }
 
-    //private Vector2 SortImitateShadow(Vector2[] pointArray)
+    private void SortImitateShadow(Vector2[] pointArray, int order)
+    {
+        // 角と影の最後の距離がめっちゃ近かったら同じ場所として扱う
+        float shadowRange = (pointArray[0] - pointArray[1]).magnitude;
+        if(shadowRange < 0.11f)
+        {
+            pointArray[1] = pointArray[0];
+        }
+
+        if(order == 1)
+        {
+
+        }
+
+    }
 
 
     private Vector2[] FrameEdgeLightHit()
@@ -152,5 +172,25 @@ public class SpotLightArea : MonoBehaviour
         }
 
         return lightHitPoint.ToArray();
+    }
+
+    /// <summary>
+    /// 影が到達する座標を取得するためのコライダーの大きさを調整する
+    /// </summary>
+    private void SetReachCollider()
+    {
+        float[] pointsCalculation = new float[2];
+        Vector2[] points = new Vector2[2];
+        points[0] = new Vector2(reachColDistance, 0);
+        points[1] = new Vector2(reachColDistance, 0);
+        // 度数法から弧度法に変換
+        pointsCalculation[0] = SpotAngle / 2 * Mathf.Deg2Rad;
+        pointsCalculation[1] = -SpotAngle / 2 * Mathf.Deg2Rad;
+
+        // Y座標を求める
+        points[0].y = Mathf.Tan(pointsCalculation[0]) * (reachColDistance + 1);
+        points[1].y = Mathf.Tan(pointsCalculation[1]) * (reachColDistance - 1);
+
+        GetComponent<EdgeCollider2D>().points = points;
     }
 }

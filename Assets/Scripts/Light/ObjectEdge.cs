@@ -11,33 +11,19 @@ public class ObjectEdge : MonoBehaviour
     [SerializeField] bool debug = true;
     [SerializeField] float radiusAllow;
 
-    private Collider2D objectCollider;          // 影ができるポイントの元コライダー
-    public bool isEnable { get; private set; }
-    SpotLightArea spotLightAreaScript;
-
     // 影の情報
     // 0: 影ができる角の位置
     // 1: カメラフレーム到達点
     // 2: 実際に影がついた位置
-    public Vector2[] shadowSideInfo { get; private set; } = new Vector2[3];
-
-    private void Start()
+    public Vector2[] GetEdgeInformation(Transform light)
     {
-        objectCollider = transform.root.GetComponent<Collider2D>();
-        spotLightAreaScript = enableLight.GetComponent<SpotLightArea>();
-    }
-
-    public void GetEdgeInformation(GameObject light)
-    {
-        // 光に当たっていなかったら処理を実行しない
-        isEnable = IsExposedToLight();
-        if (!isEnable) { return; }
+        Vector2[] shadowSideInfo = new Vector2[3];
 
         // 影ができる角の位置を設定
         shadowSideInfo[0] = transform.position;
 
         Vector2 lightDirection = (
-            light.transform.position
+            light.position
             - transform.position
             ).normalized * 0.1f;
 
@@ -63,24 +49,35 @@ public class ObjectEdge : MonoBehaviour
 
         if (debug)
         {
+            Debug.Log($"pos {(shadowSideInfo[0] - shadowSideInfo[2]).magnitude}");
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, displayFreamHit.point, color: Color.cyan);
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, objectHit.point, color: Color.green);
         }
 
+        return shadowSideInfo;
     }
 
     /// <summary>
     /// ライトの光が当たっているかを調べる
     /// </summary>
     /// <returns>当たっていたらtrue</returns>
-    private bool IsExposedToLight()
+    public bool IsExposedToLight(GameObject light)
     {
-        Vector2 lightPosition = enableLight.transform.position;
+        Vector2 lightPosition = light.transform.position;
         Vector2 thisPosition = transform.position;
         Vector2 direction = (thisPosition - lightPosition).normalized;
         Vector2 distance = thisPosition - lightPosition;
         Vector2 rootObjectDirection = (transform.position - transform.root.position).normalized * 0.01f;
 
+        // ライトの範囲外か確かめる
+        float lightAngle = light.GetComponent<SpotLightArea>().SpotAngle;
+        float thisAngle = Vector2.Angle(transform.right, distance);
+
+        if (lightAngle / 2 < thisAngle)
+        {
+            // ライトの角度より大きかったら強制で当たっていないことにする
+            return false;
+        }
 
         // ライトからRayを出す
         RaycastHit2D objectHit =

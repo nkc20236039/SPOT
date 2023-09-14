@@ -69,7 +69,6 @@ public class SpotLightArea : MonoBehaviour
                 ObjectEdge objectEdgeScript = objectEdge.GetComponent<ObjectEdge>();
 
                 // 情報をライトの相対座標として受け取る
-                objectEdgeScript.IsExposedToLight(gameObject);
                 if (objectEdgeScript.IsExposedToLight(gameObject))
                 {
                     // オブジェクトの角情報を取得する

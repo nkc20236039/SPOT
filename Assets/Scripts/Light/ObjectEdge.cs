@@ -46,6 +46,14 @@ public class ObjectEdge : MonoBehaviour
                 objectLayerMask
                 );
         shadowSideInfo[2] = objectHit.point;
+        GameObject shadowHitObject = objectHit.transform.gameObject;
+        // どのオブジェクトにもつかない例外が生じたら仮の値を入れる
+        if (!objectHit)
+        {
+            shadowSideInfo[1] = shadowSideInfo[0];
+            shadowSideInfo[2] = shadowSideInfo[1];
+            shadowHitObject = gameObject;
+        }
 
         if (debug)
         {
@@ -54,7 +62,7 @@ public class ObjectEdge : MonoBehaviour
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, objectHit.point, color: Color.green);
         }
 
-        return (shadowSideInfo, objectHit.transform.gameObject);
+        return (shadowSideInfo, shadowHitObject);
     }
 
     /// <summary>

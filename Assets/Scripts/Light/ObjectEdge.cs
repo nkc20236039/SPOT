@@ -13,9 +13,9 @@ public class ObjectEdge : MonoBehaviour
 
     // 影の情報
     // 0: 影ができる角の位置
-    // 1: カメラフレーム到達点
+    // 1: 検出用コライダー到達点
     // 2: 実際に影がついた位置
-    public Vector2[] GetEdgeInformation(Transform light)
+    public (Vector2[] shadowVector, GameObject hitObject) GetEdgeInformation(Transform light)
     {
         Vector2[] shadowSideInfo = new Vector2[3];
 
@@ -54,7 +54,7 @@ public class ObjectEdge : MonoBehaviour
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, objectHit.point, color: Color.green);
         }
 
-        return shadowSideInfo;
+        return (shadowSideInfo, objectHit.transform.gameObject);
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public class ObjectEdge : MonoBehaviour
         Vector2 thisPosition = transform.position;
         Vector2 direction = (thisPosition - lightPosition).normalized;
         Vector2 distance = thisPosition - lightPosition;
-        Vector2 rootObjectDirection = (transform.position - transform.root.position).normalized * 0.01f;
+        Vector2 rootObjectDirection = (transform.position - transform.root.position).normalized * 0.00001f;
 
         // ライトの範囲外か確かめる
         float lightAngle = light.GetComponent<SpotLightArea>().SpotAngle;
@@ -78,7 +78,6 @@ public class ObjectEdge : MonoBehaviour
             // ライトの角度より大きかったら強制で当たっていないことにする
             return false;
         }
-
         // ライトからRayを出す
         RaycastHit2D objectHit =
             Physics2D.Raycast

@@ -6,7 +6,7 @@ using UnityEngine;
 public partial class Player
 {
     private Vector2 velocity;
-    
+
     // パラメーター
     [Header("プレイヤーに影響する力")]
     [SerializeField] private float m_speed;         // プレイヤー測度
@@ -42,7 +42,7 @@ public partial class Player
         // 地面にいるとき/いないときの処理
         if (groundStateScript.isGround())
         {
-            
+
         }
         else
         {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static DelaunayTriangulationTester;
 
 public class SpotLightArea : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class SpotLightArea : MonoBehaviour
     private RaycastHit2D hitASide;
     private RaycastHit2D hitBSide;
     private PolygonCollider2D lightPolygon;
+    private DelaunayTriangulationTester meshGenerateScript;
 
     private void Start()
     {
@@ -40,6 +42,7 @@ public class SpotLightArea : MonoBehaviour
         lightPolygon = lightCollider.GetComponent<PolygonCollider2D>();
         // ライトの初期位置など取得
         LightSetting();
+        meshGenerateScript = GetComponent<DelaunayTriangulationTester>();
     }
 
     void Update()
@@ -47,110 +50,118 @@ public class SpotLightArea : MonoBehaviour
         // コライダーの広さを設定する
         SetReachCollider();
         LightSetting();
-        if (oldPosition != lightPosition)
+
+        GameObject[] objectEdges = GameObject.FindGameObjectsWithTag("ObjectEdge");
+        List<Vector2> arrivalPoints = new List<Vector2>();
+        Dictionary<Vector2, Vector2[]>
+            shadowPosition =
+            new Dictionary<Vector2, Vector2[]>();
+        Dictionary<Vector2, GameObject>
+            shadowObject =
+            new Dictionary<Vector2, GameObject>();
+        List<Vector2> plusEndOfShadow = new List<Vector2>();    // プラス方向の頂点
+        List<Vector2> minusEndOfShadow = new List<Vector2>();   // マイナス方向の頂点
+        List<Vector2> completionPoint = new List<Vector2>();    // 完成した頂点群
+        float[] oldPointDistance = { 0f, 0f };
+
+
+        // 影座標の情報を取得
+        foreach (GameObject objectEdge in objectEdges)
         {
-            GameObject[] objectEdges = GameObject.FindGameObjectsWithTag("ObjectEdge");
-            List<Vector2> arrivalPoints = new List<Vector2>();
-            Dictionary<Vector2, Vector2[]>
-                shadowPosition =
-                new Dictionary<Vector2, Vector2[]>();
-            Dictionary<Vector2, GameObject>
-                shadowObject =
-                new Dictionary<Vector2, GameObject>();
-            List<Vector2> plusEndOfShadow = new List<Vector2>();    // プラス方向の頂点
-            List<Vector2> minusEndOfShadow = new List<Vector2>();   // マイナス方向の頂点
-            List<Vector2> completionPoint = new List<Vector2>();    // 完成した頂点群
-            float[] oldPointDistance = { 0f, 0f };
+            ObjectEdge objectEdgeScript = objectEdge.GetComponent<ObjectEdge>();
 
-
-            // 影座標の情報を取得
-            foreach (GameObject objectEdge in objectEdges)
+            // 情報をライトの相対座標として受け取る
+            if (objectEdgeScript.IsExposedToLight(gameObject))
             {
-                ObjectEdge objectEdgeScript = objectEdge.GetComponent<ObjectEdge>();
+                // オブジェクトの角情報を取得する
+                var edgeInformation = objectEdgeScript.GetEdgeInformation(gameObject.transform);
+                Vector2[] shadowSideInfo = edgeInformation.shadowVector;
 
-                // 情報をライトの相対座標として受け取る
-                if (objectEdgeScript.IsExposedToLight(gameObject))
-                {
-                    // オブジェクトの角情報を取得する
-                    var edgeInformation = objectEdgeScript.GetEdgeInformation(gameObject.transform);
-                    Vector2[] shadowSideInfo = edgeInformation.shadowVector;
-
-                    // 入れる順番を管理する座標を入れる
-                    arrivalPoints.Add(
-                    gameObject.transform.InverseTransformPoint(shadowSideInfo[1])
-                    );
-                    // 上のを基準にした他の座標を入れる
-                    shadowPosition.TryAdd(
-                        arrivalPoints[arrivalPoints.Count - 1],
-                        new Vector2[]
-                            {
+                // 入れる順番を管理する座標を入れる
+                arrivalPoints.Add(
+                gameObject.transform.InverseTransformPoint(shadowSideInfo[1])
+                );
+                // 上のを基準にした他の座標を入れる
+                shadowPosition.TryAdd(
+                    arrivalPoints[arrivalPoints.Count - 1],
+                    new Vector2[]
+                        {
                                 gameObject.transform.InverseTransformPoint(shadowSideInfo[0]),
                                 gameObject.transform.InverseTransformPoint(shadowSideInfo[2])
-                            }
-                        );
-                    shadowObject.TryAdd(
-                        arrivalPoints[arrivalPoints.Count - 1],
-                        edgeInformation.hitObject
-                        );
-                }
-            }
-            // リストを降順にソートする
-            arrivalPoints.Sort((a, b) => b.y.CompareTo(a.y));
-
-            // ライトの最初と最後をとりあえず入れる
-            plusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(lightPosition));
-            plusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(hitASide.point));
-
-            // 影の形を作る
-            // プラスの場合の処理
-            for (int i = 0; i < arrivalPoints.Count; i++)
-            {
-                Debug.Log($"plus {arrivalPoints[i].y >= 0}");
-                if (arrivalPoints[i].y >= 0 && shadowPosition.ContainsKey(arrivalPoints[i]))
-                {
-                    Debug.Log("plus");
-                    // 値をそのまま並び変える
-                    plusEndOfShadow.AddRange
-                    (
-                        SortImitateShadow
-                        (
-                            shadowPosition[arrivalPoints[i]],
-                            arrivalPoints[i].x,
-                            ref oldPointDistance[0],
-                            shadowObject[arrivalPoints[i]]
-                        )
+                        }
                     );
-                }
-            }
-            // マイナスの場合の処理
-            for (int i = arrivalPoints.Count - 1; i >= 0; i--)
-            {
-                Debug.Log($"minus {arrivalPoints[i].y < 0}");
-                if (arrivalPoints[i].y < 0 && shadowPosition.ContainsKey(arrivalPoints[i]))
-                {
-                    minusEndOfShadow.AddRange
-                    (
-                        SortImitateShadow
-                        (
-                            shadowPosition[arrivalPoints[i]],
-                           arrivalPoints[i].x,
-                            ref oldPointDistance[1],
-                            shadowObject[arrivalPoints[i]]
-                        )
+                shadowObject.TryAdd(
+                    arrivalPoints[arrivalPoints.Count - 1],
+                    edgeInformation.hitObject
                     );
-                }
             }
+        }
+        // リストを降順にソートする
+        arrivalPoints.Sort((a, b) => b.y.CompareTo(a.y));
+
+        // ライトの最初と最後をとりあえず入れる
+        plusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(lightPosition));
+        plusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(hitASide.point));
+
+        // 影の形を作る
+        // プラスの場合の処理
+        int plusPointCount = 0;
+        for (int i = 0; i < arrivalPoints.Count; i++)
+        {
+            if (arrivalPoints[i].y >= 0 && shadowPosition.ContainsKey(arrivalPoints[i]))
+            {
+                // 値をそのまま並び変える
+                plusEndOfShadow.AddRange
+                (
+                    SortImitateShadow
+                    (
+                        shadowPosition[arrivalPoints[i]],
+                        arrivalPoints[i].x,
+                        ref oldPointDistance[0],
+                        shadowObject[arrivalPoints[i]]
+                    )
+                );
+
+                // プラスの数を数える
+                plusPointCount++;
+            }
+        }
+        // マイナスの場合の処理
+        for (int i = plusPointCount; i < arrivalPoints.Count; i++)
+        {
+            Debug.Log($"minus {arrivalPoints[i].y}");
+            if (arrivalPoints[i].y < 0 && shadowPosition.ContainsKey(arrivalPoints[i]))
+            {
+                minusEndOfShadow.AddRange
+                (
+                    SortImitateShadow
+                    (
+                        shadowPosition[arrivalPoints[i]],
+                       arrivalPoints[i].x,
+                        ref oldPointDistance[1],
+                        shadowObject[arrivalPoints[i]]
+                    )
+                );
+            }
+
             // マイナスのリストの要素を反転させる
             minusEndOfShadow.Reverse();
             minusEndOfShadow.Add(gameObject.transform.InverseTransformPoint(hitBSide.point));
 
-            // コライダーのポイントに入れる
+            // プラスとマイナスを合わせる
             completionPoint.AddRange(plusEndOfShadow);
             completionPoint.AddRange(minusEndOfShadow);
+
             lightPolygon.points = completionPoint.ToArray();
+
+            Debug.Log(completionPoint[completionPoint.Count - 2]);
 
             // 最後に今回の位置を保存
             oldPosition = lightPosition;
+
+            // メッシュ表示
+            meshGenerateScript.RunTestPolygonColliders();
+            completionPoint.Clear();
         }
 
     }

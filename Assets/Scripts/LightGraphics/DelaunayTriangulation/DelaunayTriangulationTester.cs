@@ -49,9 +49,8 @@ public class DelaunayTriangulationTester : MonoBehaviour
 
     protected DelaunayTriangulation m_triangulation = new DelaunayTriangulation();
 
-    protected void RunTestPolygonColliders()
+    public void RunTestPolygonColliders()
     {
-        Debug.Log("Running Delaunay triangulation test...");
 
         List<Vector2> pointsToTriangulate = new List<Vector2>();
         ExtractPointsFromCollider(MainPointCloud, pointsToTriangulate);
@@ -69,7 +68,6 @@ public class DelaunayTriangulationTester : MonoBehaviour
 
         VisualRepresentation.mesh = CreateMeshFromTriangles(m_outputTriangles);
 
-        Debug.Log("Test finished.");
     }
 
     protected void RunTestTilemapColliders()

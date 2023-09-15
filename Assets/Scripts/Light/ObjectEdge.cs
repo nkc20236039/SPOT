@@ -11,6 +11,9 @@ public class ObjectEdge : MonoBehaviour
     [SerializeField] bool debug = true;
     [SerializeField] float radiusAllow;
 
+    public bool debugHit;
+    public GameObject debugHitObject;
+    public Vector2 debugHitPosition;
     // 影の情報
     // 0: 影ができる角の位置
     // 1: 検出用コライダー到達点
@@ -32,7 +35,7 @@ public class ObjectEdge : MonoBehaviour
             Physics2D.Raycast(
                 shadowSideInfo[0] - lightDirection,
                 -lightDirection,
-                100000,
+                Mathf.Infinity,
                 indexLayerMask
                 );
 
@@ -68,12 +71,12 @@ public class ObjectEdge : MonoBehaviour
 
         if (debug)
         {
-            // Debug.Log($"pos {(shadowSideInfo[0] - shadowSideInfo[2]).magnitude}");
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[1], Color.cyan);
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[2], Color.green);
+            debugHit = objectHit;
+            debugHitObject = shadowHitObject;
+            debugHitPosition = shadowSideInfo[2];
         }
-
-        Debug.Log($"A0-1 {shadowSideInfo[1]}");
 
         return (shadowSideInfo, shadowHitObject);
     }

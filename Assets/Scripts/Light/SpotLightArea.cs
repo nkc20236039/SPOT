@@ -105,7 +105,7 @@ public class SpotLightArea : MonoBehaviour
             // プラスの場合の処理
             for (int i = 0; i < arrivalPoints.Count; i++)
             {
-                Debug.Log($"plus { arrivalPoints[i].y >= 0}");
+                Debug.Log($"plus {arrivalPoints[i].y >= 0}");
                 if (arrivalPoints[i].y >= 0 && shadowPosition.ContainsKey(arrivalPoints[i]))
                 {
                     Debug.Log("plus");
@@ -123,7 +123,7 @@ public class SpotLightArea : MonoBehaviour
                 }
             }
             // マイナスの場合の処理
-            for (int i = arrivalPoints.Count -1 ; i >= 0; i--)
+            for (int i = arrivalPoints.Count - 1; i >= 0; i--)
             {
                 Debug.Log($"minus {arrivalPoints[i].y < 0}");
                 if (arrivalPoints[i].y < 0 && shadowPosition.ContainsKey(arrivalPoints[i]))
@@ -174,8 +174,8 @@ public class SpotLightArea : MonoBehaviour
 
         if (debug)
         {
-            Debug.DrawLine(lightPosition, hitASide.point, color: Color.cyan);
-            Debug.DrawLine(lightPosition, hitBSide.point, color: Color.cyan);
+            Debug.DrawLine(lightPosition, hitASide.point, Color.cyan);
+            Debug.DrawLine(lightPosition, hitBSide.point, Color.cyan);
         }
     }
 

@@ -110,7 +110,7 @@ public class MainLightFrame : MonoBehaviour
                 // ç°âÒÇÃç¿ïWÇãLò^
                 points.Add(lineStart);
                 Debug.Log($"{i} : {lineStart}");
-                if (debug) { Debug.DrawLine(lineStart, lineEnd, color: Color.green); }
+                if (debug) { Debug.DrawLine(lineStart, lineEnd,  Color.green); }
 
 
             }
@@ -242,8 +242,8 @@ public class MainLightFrame : MonoBehaviour
                 }
                 if (debug)
                 {
-                    Debug.DrawRay(lightScript.lightPosition, lightScript.forwardDirection * 100, color: Color.black);
-                    Debug.DrawLine(lightScript.lightPosition, targetPosition, color: Color.gray);
+                    Debug.DrawRay(lightScript.lightPosition, lightScript.forwardDirection * 100,  Color.black);
+                    Debug.DrawLine(lightScript.lightPosition, targetPosition,  Color.gray);
                 }
             }
         }

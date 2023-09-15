@@ -24,7 +24,7 @@ public class ObjectEdge : MonoBehaviour
 
         Vector2 lightDirection = (
             light.position
-            - transform.position
+            - this.transform.position
             ).normalized * 0.1f;
 
         //カメラフレーム到達点を求める
@@ -32,9 +32,10 @@ public class ObjectEdge : MonoBehaviour
             Physics2D.Raycast(
                 shadowSideInfo[0] - lightDirection,
                 -lightDirection,
-                Mathf.Infinity,
+                100000,
                 indexLayerMask
                 );
+
         shadowSideInfo[1] = displayFreamHit.point;
 
         // 実際の影がついた位置を求める
@@ -46,21 +47,33 @@ public class ObjectEdge : MonoBehaviour
                 objectLayerMask
                 );
         shadowSideInfo[2] = objectHit.point;
-        GameObject shadowHitObject = objectHit.transform.gameObject;
-        // どのオブジェクトにもつかない例外が生じたら仮の値を入れる
-        if (!objectHit)
+        GameObject shadowHitObject;
+        if (objectHit.transform != null)
         {
-            shadowSideInfo[1] = shadowSideInfo[0];
-            shadowSideInfo[2] = shadowSideInfo[1];
-            shadowHitObject = gameObject;
+            // オブジェクトに当たったら当たったオブジェクトを入れる
+            shadowHitObject = objectHit.transform.gameObject;
+        }
+        else
+        {
+            // オブジェクトに当たらなかったら親オブジェクトを当たったオブジェにする
+            shadowHitObject = transform.root.gameObject;
+        }
+
+        // どのオブジェクトにもつかない例外が生じたら
+        // 角の座標に揃える
+        if (Mathf.Approximately(objectHit.distance, 0))
+        {
+            shadowSideInfo[2] = shadowSideInfo[0];
         }
 
         if (debug)
         {
-            Debug.Log($"pos {(shadowSideInfo[0] - shadowSideInfo[2]).magnitude}");
-            Debug.DrawLine(shadowSideInfo[0] - lightDirection, displayFreamHit.point, color: Color.cyan);
-            Debug.DrawLine(shadowSideInfo[0] - lightDirection, objectHit.point, color: Color.green);
+            // Debug.Log($"pos {(shadowSideInfo[0] - shadowSideInfo[2]).magnitude}");
+            Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[1], Color.cyan);
+            Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[2], Color.green);
         }
+
+        Debug.Log($"A0-1 {shadowSideInfo[1]}");
 
         return (shadowSideInfo, shadowHitObject);
     }

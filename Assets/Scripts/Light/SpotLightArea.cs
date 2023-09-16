@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 using static DelaunayTriangulationTester;
@@ -137,12 +138,12 @@ public class SpotLightArea : MonoBehaviour
         // マイナスの座標情報を完成頂点リストに並び変える
         oldPointDistance[1] = reachColDistance - minusArrivalPoint[minusArrivalPoint.Count - 1].x;
         minusArrivalPoint.Reverse();
-        for (int i = 0; i < minusArrivalPoint.Count; i--)
+        List<Vector2> arrivalPointStorage = new List<Vector2>();
+        for (int i = 0; i < minusArrivalPoint.Count; i++)
         {
             // 後ろから入れていく
-            completionPoint.InsertRange
+            arrivalPointStorage.AddRange
             (
-                minusArrivalPoint.Count - i - 1,
                 SortImitateShadow
                 (
                     shadowPosition[minusArrivalPoint[i]],
@@ -152,6 +153,8 @@ public class SpotLightArea : MonoBehaviour
                 )
             );
         }
+        arrivalPointStorage.Reverse();
+        completionPoint.AddRange(arrivalPointStorage);
         completionPoint.Add(gameObject.transform.InverseTransformPoint(hitBSide.point));
 
         // ポリゴンコライダーに反映する

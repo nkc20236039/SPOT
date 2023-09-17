@@ -5,8 +5,7 @@ using UnityEngine;
 
 public partial class Player
 {
-    private Vector2 velocity;
-
+    
     // パラメーター
     [Header("プレイヤーに影響する力")]
     [SerializeField] private float m_speed;         // プレイヤー測度
@@ -18,17 +17,11 @@ public partial class Player
     [SerializeField] private Vector3 parentPos;     // 持っている時のプレイヤーからの距離
     [SerializeField] private GameObject[] spotlight;// シーンに存在するスポットライト
 
-    /// <summary>
-    /// プレイヤーの動く
-    /// </summary>
     private void PlayerMove()
     {
-        // 現在のvelocityを取得
-        velocity = rigidbody2d.velocity;
-
-        // 左右移動
-        velocity.x = moveInput * m_speed * Time.deltaTime;
-
+        // プレイヤーに移動量を加算
+        velocity.x = moveInput.x * m_speed * Time.deltaTime;
+        Debug.Log(velocity.x);
         // 斜面だった場合にベクトルを変更する
         velocity = groundStateScript.Slope(velocity);
 
@@ -38,6 +31,32 @@ public partial class Player
             velocity.y += m_jumpForce;
             isJump = false;
         }
+
+        if (moveInput.x != 0)
+        {
+            // スケールを移動方向に合わせて変更する
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x);
+            scale.x = (0 < moveInput.x) ? scale.x : -scale.x;
+            transform.localScale = scale;
+        }
+    }
+
+#if false
+    /// <summary>
+    /// プレイヤーの移動する動作
+    /// </summary>
+    private void PlayerMove()
+    {
+        
+        // 左右移動
+        velocity.x = moveInput * m_speed * Time.deltaTime;
+
+        // 斜面だった場合にベクトルを変更する
+        velocity = groundStateScript.Slope(velocity);
+
+        // ジャンプ
+        
 
         // 地面にいるとき/いないときの処理
         if (groundStateScript.isGround())
@@ -51,7 +70,7 @@ public partial class Player
         }
 
         // 向きを合わせる
-        if(moveInput != 0)
+        if (moveInput != 0)
         {
             Vector3 scale = transform.localScale;
             scale.x = Mathf.Abs(scale.x);
@@ -86,11 +105,11 @@ public partial class Player
             float nearestDistance = pickReach;
 
             // ライトとプレイヤーの位置の距離を求める
-            foreach(GameObject thisObject in light)
+            foreach (GameObject thisObject in light)
             {
                 Vector3 distance = thisObject.transform.position - transform.position;
                 // 拾える範囲内にライトがあるか調べる
-                if(distance.magnitude <= pickReach && distance.magnitude < nearestDistance)
+                if (distance.magnitude <= pickReach && distance.magnitude < nearestDistance)
                 {
                     nearestObject = thisObject;
                     nearestDistance = distance.magnitude;
@@ -98,7 +117,7 @@ public partial class Player
             }
 
             // 拾える範囲内にライトがあったか
-            if(nearestObject != null)
+            if (nearestObject != null)
             {
                 // 親子関係に登録する
                 nearestObject.transform.parent = this.transform;
@@ -124,7 +143,7 @@ public partial class Player
         lightNumber--;
         if (lightNumber < spotlight.Length)
         {
-            foreach(GameObject light in spotlight)
+            foreach (GameObject light in spotlight)
             {
                 if (light.activeSelf)
                 {
@@ -134,4 +153,5 @@ public partial class Player
             spotlight[lightNumber].SetActive(true);
         }
     }
+#endif
 }

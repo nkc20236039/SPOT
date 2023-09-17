@@ -14,7 +14,7 @@ public class GroundState : MonoBehaviour
     /// 地面判定
     /// </summary>
     /// <returns>bool</returns>
-    public bool isGround()
+    public bool IsGround()
     {
         // 初期スタート位置
         rayOrigin = transform.position + rayRelativePos;
@@ -50,7 +50,7 @@ public class GroundState : MonoBehaviour
     /// <returns></returns>
     public Vector3 Slope(Vector3 vector)
     {
-        if(isGround())
+        if(IsGround())
         {
             // 斜面のベクトルを求める
             return Vector3.ProjectOnPlane(vector, groundNormal);

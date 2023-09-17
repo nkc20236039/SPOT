@@ -79,6 +79,12 @@ public class SpotLightArea : MonoBehaviour
                 var edgeInformation = objectEdgeScript.GetEdgeInformation(gameObject.transform);
                 Vector2[] shadowSideInfo = edgeInformation.shadowVector;
 
+                // ローカル座標がライトの反対側(マイナス)なら次のループに移行
+                if(gameObject.transform.InverseTransformPoint(shadowSideInfo[0]).x < 0)
+                {
+                    continue;
+                }
+
                 // 入れる順番を管理する座標を入れる
                 arrivalPoints.Add(
                 gameObject.transform.InverseTransformPoint(shadowSideInfo[1])
@@ -103,7 +109,7 @@ public class SpotLightArea : MonoBehaviour
 
         // ライトの最初と最後をとりあえず入れる
         completionPoint.Add(gameObject.transform.InverseTransformPoint(lightPosition));
-        plusArrivalPoint.Add(gameObject.transform.InverseTransformPoint(hitASide.point));
+        completionPoint.Add(gameObject.transform.InverseTransformPoint(hitASide.point));
 
         // すべての到達点をプラスとマイナスに分ける
         for (int i = 0; i < arrivalPoints.Count; i++)
@@ -121,40 +127,47 @@ public class SpotLightArea : MonoBehaviour
         }
 
         // プラスの座標情報を完成頂点リストに並び変える
-        oldPointDistance[0] = reachColDistance - plusArrivalPoint[1].x;
-        for (int i = 1; i < plusArrivalPoint.Count; i++)
+        if(plusArrivalPoint.Count > 0)
         {
-            completionPoint.AddRange
-            (
-                SortImitateShadow
+            oldPointDistance[0] = reachColDistance - completionPoint[1].x;
+            for (int i = 0; i < plusArrivalPoint.Count; i++)
+            {
+                completionPoint.AddRange
                 (
-                    shadowPosition[plusArrivalPoint[i]],
-                    reachColDistance,
-                    ref oldPointDistance[0],
-                    shadowObject[plusArrivalPoint[i]]
-                )
-            );
+                    SortImitateShadow
+                    (
+                        shadowPosition[plusArrivalPoint[i]],
+                        reachColDistance,
+                        ref oldPointDistance[0],
+                        shadowObject[plusArrivalPoint[i]]
+                    )
+                );
+            }
         }
+        
         // マイナスの座標情報を完成頂点リストに並び変える
-        oldPointDistance[1] = reachColDistance - minusArrivalPoint[minusArrivalPoint.Count - 1].x;
-        minusArrivalPoint.Reverse();
-        List<Vector2> arrivalPointStorage = new List<Vector2>();
-        for (int i = 0; i < minusArrivalPoint.Count; i++)
+        if( minusArrivalPoint.Count > 0)
         {
-            // 後ろから入れていく
-            arrivalPointStorage.AddRange
-            (
-                SortImitateShadow
+            oldPointDistance[1] = reachColDistance - minusArrivalPoint[minusArrivalPoint.Count - 1].x;
+            minusArrivalPoint.Reverse();
+            List<Vector2> arrivalPointStorage = new List<Vector2>();
+            for (int i = 0; i < minusArrivalPoint.Count; i++)
+            {
+                // 後ろから入れていく
+                arrivalPointStorage.AddRange
                 (
-                    shadowPosition[minusArrivalPoint[i]],
-                    reachColDistance,
-                    ref oldPointDistance[1],
-                    shadowObject[minusArrivalPoint[i]]
-                )
-            );
+                    SortImitateShadow
+                    (
+                        shadowPosition[minusArrivalPoint[i]],
+                        reachColDistance,
+                        ref oldPointDistance[1],
+                        shadowObject[minusArrivalPoint[i]]
+                    )
+                );
+            }
+            arrivalPointStorage.Reverse();
+            completionPoint.AddRange(arrivalPointStorage);
         }
-        arrivalPointStorage.Reverse();
-        completionPoint.AddRange(arrivalPointStorage);
         completionPoint.Add(gameObject.transform.InverseTransformPoint(hitBSide.point));
 
         // ポリゴンコライダーに反映する
@@ -180,8 +193,8 @@ public class SpotLightArea : MonoBehaviour
         lightPosition = transform.position;
 
         // 光の終点
-        Vector2 directionASide = Quaternion.Euler(0, 0, m_spotAngle / 2) * transform.right;
-        Vector2 directionBSide = Quaternion.Euler(0, 0, -m_spotAngle / 2) * transform.right;
+        Vector2 directionASide = Quaternion.Euler(0, 0, m_spotAngle / 2) * transform.right * Mathf.Sign(transform.root.localScale.x);
+        Vector2 directionBSide = Quaternion.Euler(0, 0, -m_spotAngle / 2) * transform.right * Mathf.Sign(transform.root.localScale.x);
 
         // ライトの終点を取得
         hitASide = Physics2D.Raycast(lightPosition, directionASide, Mathf.Infinity, m_defaultLayerMask);
@@ -190,8 +203,8 @@ public class SpotLightArea : MonoBehaviour
 
         if (debug)
         {
-            Debug.DrawLine(lightPosition, hitASide.point, Color.cyan);
-            Debug.DrawLine(lightPosition, hitBSide.point, Color.cyan);
+            Debug.DrawLine(lightPosition, hitASide.point, Color.yellow);
+            Debug.DrawLine(lightPosition, hitBSide.point, Color.yellow);
         }
     }
 

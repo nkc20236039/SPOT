@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public partial class Player : MonoBehaviour
 {
@@ -21,7 +20,7 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
-        KeyBoardOperation();
+        KeyBoardOperation;
     }
 
     void FixedUpdate()

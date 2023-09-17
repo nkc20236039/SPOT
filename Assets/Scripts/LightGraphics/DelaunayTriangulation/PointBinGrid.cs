@@ -29,7 +29,7 @@ namespace Game.Utils.Triangulation
 
         // The size of a cell in 2D space.
         private Vector2 m_cellSize;
-
+        
         // The size of the grid in the 2D space.
         private Vector2 m_gridSize; // Xmax, Ymax
 
@@ -59,7 +59,7 @@ namespace Game.Utils.Triangulation
             int columnIndex = (int)(0.99f * m_cellsPerSide * newPoint.x / m_gridSize.x); // j
 
             int binIndex = 0; // b
-
+            
             if (rowIndex % 2 == 0)
             {
                 binIndex = rowIndex * m_cellsPerSide + columnIndex + 1;

@@ -99,6 +99,7 @@ public class ObjectEdge : MonoBehaviour
 
         if (lightAngle / 2 < thisAngle)
         {
+            Debug.Log($"{lightAngle / 2} < {thisAngle}");
             // ƒ‰ƒCƒg‚ÌŠp“x‚æ‚è‘å‚«‚©‚Á‚½‚ç‹­§‚Å“–‚½‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚É‚·‚é
             return false;
         }

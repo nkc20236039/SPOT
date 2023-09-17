@@ -20,6 +20,16 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
+        KeyBoardOperation;
+    }
+
+    void FixedUpdate()
+    {
+        PlayerMove();
+    }
+
+    private void KeyBoardOperation() 
+    {
         // ÉÇÅ[ÉhêÿÇËë÷Ç¶
         if (Input.GetButtonDown("Player Mode"))
         {
@@ -62,10 +72,5 @@ public partial class Player : MonoBehaviour
         {
             SwitchSpotLight(4);
         }
-    }
-
-    void FixedUpdate()
-    {
-        PlayerMove();
     }
 }

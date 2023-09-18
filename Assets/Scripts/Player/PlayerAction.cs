@@ -5,12 +5,13 @@ using UnityEngine;
 
 public partial class Player
 {
-    
+
     // パラメーター
     [Header("プレイヤーに影響する力")]
     [SerializeField] private float m_speed;         // プレイヤー測度
     [SerializeField] private float m_jumpForce;     // ジャンプ力
     [SerializeField] private float m_gravityScale;  //　重力の大きさ
+    [SerializeField] private float airborneTime;    // 滞空時間
 
     [Header("ライトに関わる変数")]
     [SerializeField] private float pickReach;       // 拾える範囲
@@ -21,21 +22,22 @@ public partial class Player
     {
         // プレイヤーに移動量を加算
         velocity.x = moveInput.x * m_speed * Time.deltaTime;
-        Debug.Log(velocity.x);
         // 斜面だった場合にベクトルを変更する
         velocity = groundStateScript.Slope(velocity);
 
         // ジャンプ
-        animator.SetBool("IsJump", isJump);
-        animator.SetBool("JumpTurn", isJumping);
-        if (isJump)
+        if (state == PlayerState.Jump)
         {
-            velocity.y += m_jumpForce;
+            velocity.y = m_jumpForce;
+            // ジャンプ回転の動作を開始する
+            state = PlayerState.JumpTurn;
+            StartCoroutine("JumpTurn");
         }
-        else if(!groundStateScript.IsGround())
+        if(state == PlayerState.JumpTurn)
         {
-            SetGravity();
+            velocity.y *= 0.8f;
         }
+
 
         if (moveInput.x != 0)
         {
@@ -45,46 +47,18 @@ public partial class Player
             scale.x = (0 < moveInput.x) ? scale.x : -scale.x;
             transform.localScale = scale;
         }
+
     }
 
-#if false
-    /// <summary>
-    /// プレイヤーの移動する動作
-    /// </summary>
-    private void PlayerMove()
+    private IEnumerator JumpTurn()
     {
-        
-        // 左右移動
-        velocity.x = moveInput * m_speed * Time.deltaTime;
-
-        // 斜面だった場合にベクトルを変更する
-        velocity = groundStateScript.Slope(velocity);
-
-        // ジャンプ
-        
-
-        // 地面にいるとき/いないときの処理
-        if (groundStateScript.isGround())
+        yield return new WaitForSeconds(airborneTime);
+        animator.SetBool("Jump", false);
+        // 滞空時間を超えたら回転して落下する
+        if (!groundStateScript.IsGround())
         {
-
+            animator.SetTrigger("JumpTurn");
         }
-        else
-        {
-            //重力を付ける
-            velocity.y -= m_gravityScale * Time.deltaTime;
-        }
-
-        // 向きを合わせる
-        if (moveInput != 0)
-        {
-            Vector3 scale = transform.localScale;
-            scale.x = Mathf.Abs(scale.x);
-            scale.x = (0 < moveInput) ? scale.x : -scale.x;
-            transform.localScale = scale;
-        }
-
-        // 最終的な移動量を適用
-        rigidbody2d.velocity = velocity;
     }
 
     /// <summary>
@@ -143,7 +117,7 @@ public partial class Player
         }
     }
 
-    private void SwitchSpotLight(int lightNumber)
+    private void ChangeSpotLight(int lightNumber)
     {
         lightNumber--;
         if (lightNumber < spotlight.Length)
@@ -158,5 +132,5 @@ public partial class Player
             spotlight[lightNumber].SetActive(true);
         }
     }
-#endif
+
 }

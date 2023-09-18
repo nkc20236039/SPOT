@@ -38,6 +38,15 @@
                     "id": "2f42567e-73a0-4e48-becf-7ae271885193",
                     "expectedControlType": "Button",
                     "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchSpotLight",
+                    "type": "Button",
+                    "id": "e9654b33-49f6-4dbc-8c7e-0eb1132e6b56",
+                    "expectedControlType": "Button",
+                    "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 }
@@ -238,6 +247,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "efeeed0e-bdbf-4c92-8e6a-08aea3da79e7",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "Scale",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SwitchSpotLight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -4,12 +4,19 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+enum PlayerState
+{
+    Idle,
+    Run,
+    Jump,
+    JumpTurn,
+    Fall,
+}
+
 public partial class Player : MonoBehaviour
 {
     private Vector2 moveInput;                // 移動方向取得
-    private bool isJump;                    // ジャンプしたか
-    private bool isJumping;                 // ジャンプ中のロールリング
-    private bool isPlayerOperation = true;          // プレイヤーを操作できるか
+    private PlayerState state;
 
     private GroundState groundStateScript;  // 地面チェックscript
     private Rigidbody2D rigidbody2d;        // rigidbody
@@ -28,6 +35,32 @@ public partial class Player : MonoBehaviour
         // 現在のvelocityを取得
         velocity = rigidbody2d.velocity;
 
+        // 地上判定
+        if (groundStateScript.IsGround())
+        {
+            animator.SetBool("Fall", false);
+            if (velocity.x != 0 && state != PlayerState.JumpTurn && state != PlayerState.Jump)
+            {
+                // ジャンプしていない&
+                // 移動してたら歩きアニメーションをつける
+                animator.SetBool("Run", true);
+            }
+            else
+            {
+                // 移動してなかったら
+                animator.SetBool("Run", false);
+            }
+        }
+        else
+        {
+            if (state != PlayerState.JumpTurn)
+            {
+                // 落下状態のとき重力を設定
+                velocity.y = -m_gravityScale;
+                animator.SetBool("Fall", true);
+            }
+        }
+
         PlayerMove();
 
         // 最終的な移動量を適用
@@ -43,8 +76,6 @@ public partial class Player : MonoBehaviour
         // 入力方向を取得
         moveInput = context.ReadValue<Vector2>();
 
-        // アニメーション再生
-        animator.SetBool("IsRun", context.performed);
     }
 
     /// <summary>
@@ -56,61 +87,19 @@ public partial class Player : MonoBehaviour
         if (groundStateScript.IsGround())
         {
             // 地上にいればジャンプ
-            isJump = context.performed;
-
+            state = PlayerState.Jump;
+            animator.SetBool("Jump", true);
         }
     }
 
 
     /// <summary>
-    /// 重力を設定
+    /// 落下状態に設定
     /// </summary>
-    public void SetGravity()
+    public void SetFallState()
     {
-        
-        isJump = false;
-        isJumping = false;
-        // アニメーション
-        animator.SetBool("Fall", true);
+        animator.SetBool("JumpTurn", false);
+        state = PlayerState.Fall;
     }
 
-    private void KeyBoardOperation()
-    {
-        // モード切り替え
-        if (Input.GetButtonDown("Player Mode"))
-        {
-            isPlayerOperation = (isPlayerOperation) ? false : true;
-            
-        }
-        // 入力チェック
-
-        //プレイヤー操作                         // 左右キー
-        if (Input.GetButtonDown("Jump") && groundStateScript.IsGround())    // ジャンプキー
-        {
-            isJump = true;
-        }
-        /*if (Input.GetButtonDown("Switch Spot Light"))                       // ライトの切り替えキー
-        {
-            SwitchSpotLight();
-        }
-
-
-        // ライト切り替え
-        if (Input.GetButtonUp("Point Light 1"))
-        {
-            SwitchSpotLight(1);
-        }
-        if (Input.GetButtonUp("Point Light 2"))
-        {
-            SwitchSpotLight(2);
-        }
-        if (Input.GetButtonUp("Point Light 3"))
-        {
-            SwitchSpotLight(3);
-        }
-        if (Input.GetButtonUp("Point Light 4"))
-        {
-            SwitchSpotLight(4);
-        }*/
-    }
 }

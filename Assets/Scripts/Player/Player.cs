@@ -8,6 +8,7 @@ public partial class Player : MonoBehaviour
 {
     private Vector2 moveInput;                // 移動方向取得
     private bool isJump;                    // ジャンプしたか
+    private bool isJumping;                 // ジャンプ中のロールリング
     private bool isPlayerOperation = true;          // プレイヤーを操作できるか
 
     private GroundState groundStateScript;  // 地面チェックscript
@@ -57,10 +58,20 @@ public partial class Player : MonoBehaviour
             // 地上にいればジャンプ
             isJump = context.performed;
 
-            // アニメーションを再生
-            animator.SetBool("IsJump", true);
         }
+    }
 
+
+    /// <summary>
+    /// 重力を設定
+    /// </summary>
+    public void SetGravity()
+    {
+        
+        isJump = false;
+        isJumping = false;
+        // アニメーション
+        animator.SetBool("Fall", true);
     }
 
     private void KeyBoardOperation()

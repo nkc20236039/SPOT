@@ -26,10 +26,15 @@ public partial class Player
         velocity = groundStateScript.Slope(velocity);
 
         // ƒWƒƒƒ“ƒv
+        animator.SetBool("IsJump", isJump);
+        animator.SetBool("JumpTurn", isJumping);
         if (isJump)
         {
             velocity.y += m_jumpForce;
-            isJump = false;
+        }
+        else if(!groundStateScript.IsGround())
+        {
+            SetGravity();
         }
 
         if (moveInput.x != 0)

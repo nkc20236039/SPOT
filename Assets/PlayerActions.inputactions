@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SwitchSpotLight",
+                    "name": "CallSpotLight",
                     "type": "Button",
                     "id": "e9654b33-49f6-4dbc-8c7e-0eb1132e6b56",
                     "expectedControlType": "Button",
@@ -199,7 +199,7 @@
                     "name": "",
                     "id": "00476edb-1d2b-41e0-88d9-c8d323f3da18",
                     "path": "<Keyboard>/space",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Jump",
@@ -210,7 +210,7 @@
                     "name": "",
                     "id": "62d9ec50-15f7-425e-ad68-b0dbaaa65994",
                     "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Jump",
@@ -220,11 +220,11 @@
                 {
                     "name": "",
                     "id": "efeeed0e-bdbf-4c92-8e6a-08aea3da79e7",
-                    "path": "<Keyboard>/1",
-                    "interactions": "",
-                    "processors": "Scale",
+                    "path": "<Keyboard>/f",
+                    "interactions": "Press",
+                    "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "SwitchSpotLight",
+                    "action": "CallSpotLight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

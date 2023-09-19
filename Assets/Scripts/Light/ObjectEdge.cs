@@ -11,9 +11,6 @@ public class ObjectEdge : MonoBehaviour
     [SerializeField] bool debug = true;
     [SerializeField] float radiusAllow;
 
-    public bool debugHit;
-    public GameObject debugHitObject;
-    public Vector2 debugHitPosition;
     // 影の情報
     // 0: 影ができる角の位置
     // 1: 検出用コライダー到達点
@@ -73,9 +70,6 @@ public class ObjectEdge : MonoBehaviour
         {
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[1], Color.cyan);
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[2], Color.green);
-            debugHit = objectHit;
-            debugHitObject = shadowHitObject;
-            debugHitPosition = shadowSideInfo[2];
         }
 
         return (shadowSideInfo, shadowHitObject);
@@ -85,41 +79,52 @@ public class ObjectEdge : MonoBehaviour
     /// ライトの光が当たっているかを調べる
     /// </summary>
     /// <returns>当たっていたらtrue</returns>
-    public bool IsExposedToLight(GameObject light)
+    public bool IsExposedToLight(Vector2 lightPoint, Vector2 pointA, Vector2 pointB)
     {
-        Vector2 lightPosition = light.transform.position;
-        Vector2 thisPosition = transform.position;
-        Vector2 direction = (thisPosition - lightPosition).normalized;
-        Vector2 distance = thisPosition - lightPosition;
-        Vector2 rootObjectDirection = (transform.position - transform.root.position).normalized * 0.00001f;
+        Debug.Log($"{lightPoint}\n{pointA}\n{pointB}");
 
-        // ライトの範囲外か確かめる
-        float lightAngle = light.GetComponent<SpotLightArea>().SpotAngle;
-        float thisAngle = Vector2.Angle(transform.right, distance);
+        Vector2 edgePoint = transform.position;
+        Vector2 direction = (edgePoint - lightPoint).normalized;
+        Vector2 distance = edgePoint - lightPoint;
 
-        if (lightAngle / 2 < thisAngle)
+        // 各辺のベクトルを計算
+        Vector2 pointAToLight = pointA - lightPoint;
+        Vector2 pointBToPointA = pointB - pointA;
+        Vector2 lightToPointB = lightPoint - pointB;
+
+        // 各頂点から指定した座標へのベクトルを計算
+        Vector2 edgeToLight = edgePoint - lightPoint;
+        Vector2 edgeToPointA = edgePoint - pointA;
+        Vector2 edgeToPointB = edgePoint - pointB;
+
+        // 各辺の外積を計算
+        float crossPointAToLight = Vector3.Cross(pointAToLight, edgeToLight).z;
+        float crossPointBToPointA = Vector3.Cross(pointBToPointA, edgeToPointA).z;
+        float crossLightToPointB = Vector3.Cross(lightToPointB, edgeToPointB).z;
+
+        bool plusCross = crossPointAToLight >= 0 && crossPointBToPointA >= 0 && crossLightToPointB >= 0;
+        bool minusCross = crossPointAToLight <= 0 && crossPointBToPointA <= 0 && crossLightToPointB <= 0;
+        if (!(plusCross || minusCross))
         {
-            // ライトの角度より大きかったら強制で当たっていないことにする
+            // すべての外積が同じ符号でなければ強制で当たっていないことにする
             return false;
         }
         // ライトからRayを出す
         RaycastHit2D objectHit =
             Physics2D.Raycast
             (
-                lightPosition - rootObjectDirection,
+                lightPoint + direction,
                 direction,
                 distance.magnitude * 2,
                 objectLayerMask
             );
         if (debug)
         {
-            Debug.DrawLine(lightPosition, objectHit.point);
+            Debug.DrawLine(lightPoint, objectHit.point);
         }
-        // 当たった地点とこのオブジェクトまでの距離を求める
-        float hitDistance = (thisPosition - objectHit.point).magnitude;
 
         // 当たった地点が許容範囲内ならTrueを返す
-        return hitDistance < radiusAllow;
+        return objectHit.transform.gameObject == gameObject;
     }
 
     // ギズモの表示

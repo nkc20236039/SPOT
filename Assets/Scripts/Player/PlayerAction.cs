@@ -61,62 +61,6 @@ public partial class Player
         }
     }
 
-    /// <summary>
-    /// ライトを拾う/置く動作の切り替え
-    /// </summary>
-    private void SwitchSpotLight()
-    {
-        // ライトを持っているかチェック
-        bool haveLight = GameObject.Find("Light").transform.IsChildOf(transform);
-
-        if (haveLight)
-        {
-            // ライトを持っている時ライトを置く
-            this.gameObject.transform.DetachChildren();
-            haveLight = false;
-        }
-        else
-        {
-            // ライトを持っていない時の処理
-            // 全てのライトをアレイに入れる
-            GameObject[] light = GameObject.FindGameObjectsWithTag("Light");
-            GameObject nearestObject = null;
-            float nearestDistance = pickReach;
-
-            // ライトとプレイヤーの位置の距離を求める
-            foreach (GameObject thisObject in light)
-            {
-                Vector3 distance = thisObject.transform.position - transform.position;
-                // 拾える範囲内にライトがあるか調べる
-                if (distance.magnitude <= pickReach && distance.magnitude < nearestDistance)
-                {
-                    nearestObject = thisObject;
-                    nearestDistance = distance.magnitude;
-                }
-            }
-
-            // 拾える範囲内にライトがあったか
-            if (nearestObject != null)
-            {
-                // 親子関係に登録する
-                nearestObject.transform.parent = this.transform;
-                // 進行方向になるように補正
-                parentPos.x = Mathf.Abs(parentPos.x) * Mathf.Sign(transform.localScale.x) * -1;
-                nearestObject.transform.localScale = Vector3.one;
-                // 座標を変更
-                nearestObject.transform.position = transform.position + parentPos;
-
-
-                haveLight = true;
-            }
-            else
-            {
-                // 無かった場合のメッセージを送る
-                Debug.Log("近くにライトが無い\n--UI作成時に画面に表示するようにする");
-            }
-        }
-    }
-
     private void ChangeSpotLight(int lightNumber)
     {
         lightNumber--;

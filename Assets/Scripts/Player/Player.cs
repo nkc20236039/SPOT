@@ -15,7 +15,8 @@ enum PlayerState
 
 public partial class Player : MonoBehaviour
 {
-    public int lightDirection { get; private set; }
+    public int lightDirection { get; private set; } = 1;
+    public Vector2 lightCallPosition;
 
     private Vector2 moveInput;                // 移動方向取得
     private PlayerState state;
@@ -25,9 +26,11 @@ public partial class Player : MonoBehaviour
     private Vector2 velocity;
     private Animator animator;
     private bool isRightClicking;
-    private float mouseDelta;
+    private bool haveLight;                 // ライトの所持状態
+    private float mouseDelta;               // マウスの移動量
 
     [SerializeField] float detectionRange;
+    [SerializeField] Vector2 distanceToLight;
 
     void Start()
     {
@@ -69,7 +72,20 @@ public partial class Player : MonoBehaviour
             }
         }
 
+        // プレイヤーの移動量
         PlayerMove();
+
+        // カメラの移動場所を設定
+        if (haveLight)
+        {
+            Vector2 playerPosition = transform.position;
+            lightCallPosition = (playerPosition + distanceToLight) * lightDirection;
+        }
+        else
+        {
+
+            lightCallPosition = Vector2.zero;
+        }
 
         // 最終的な移動量を適用
         rigidbody2d.velocity = velocity;
@@ -104,6 +120,8 @@ public partial class Player : MonoBehaviour
     /// <param name="context"></param>
     public void OnJump(InputAction.CallbackContext context)
     {
+        if (!context.performed) { return; }
+
         if (groundStateScript.IsGround())
         {
             // 地上にいればジャンプ
@@ -112,11 +130,21 @@ public partial class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 右クリック検知
+    /// </summary>
+    /// <param name="context"></param>
     public void LightFacing(InputAction.CallbackContext context)
     {
         isRightClicking = context.performed;
     }
 
+    public void InteractLight(InputAction.CallbackContext context)
+    {
+        if (!context.performed) { return; }
+
+        haveLight = true ? false : true;
+    }
 
     /// <summary>
     /// 落下状態に設定

@@ -50,16 +50,6 @@ public class SpotLightArea : MonoBehaviour
 
     void Update()
     {
-        // プライヤーからライトの呼び出しがあった場合
-        if(playerScript.lightCallPosition != Vector2.zero)
-        {
-            float lightSpeed = Mathf.Clamp(Vector2.Distance(lightPosition, playerScript.lightCallPosition), 0, 5);
-            transform.position += Vector3.MoveTowards(lightPosition, playerScript.lightCallPosition, lightSpeed);
-
-            lightPosition = transform.position;
-        }
-
-
         // コライダーの広さを設定する
         GetComponent<EdgeCollider2D>().points =
             SetReachCollider();

@@ -26,11 +26,12 @@ public partial class Player : MonoBehaviour
     private Vector2 velocity;
     private Animator animator;
     private bool isRightClicking;
-    private bool haveLight;                 // ライトの所持状態
+    private bool haveLight = true;                 // ライトの所持状態
     private float mouseDelta;               // マウスの移動量
 
     [SerializeField] float detectionRange;
     [SerializeField] Vector2 distanceToLight;
+    [SerializeField] GameObject spotLight;
 
     void Start()
     {
@@ -79,14 +80,8 @@ public partial class Player : MonoBehaviour
         if (haveLight)
         {
             Vector2 playerPosition = transform.position;
-            lightCallPosition = (playerPosition + distanceToLight) * lightDirection;
+            spotLight.transform.position = playerPosition + distanceToLight * lightDirection;
         }
-        else
-        {
-
-            lightCallPosition = Vector2.zero;
-        }
-
         // 最終的な移動量を適用
         rigidbody2d.velocity = velocity;
 

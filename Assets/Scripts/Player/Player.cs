@@ -15,6 +15,8 @@ enum PlayerState
 
 public partial class Player : MonoBehaviour
 {
+    public int lightDirection { get; private set; }
+
     private Vector2 moveInput;                // 移動方向取得
     private PlayerState state;
 
@@ -22,6 +24,10 @@ public partial class Player : MonoBehaviour
     private Rigidbody2D rigidbody2d;        // rigidbody
     private Vector2 velocity;
     private Animator animator;
+    private bool isRightClicking;
+    private float mouseDelta;
+
+    [SerializeField] float detectionRange;
 
     void Start()
     {
@@ -38,6 +44,8 @@ public partial class Player : MonoBehaviour
         // 地上判定
         if (groundStateScript.IsGround())
         {
+            animator.SetBool("JumpTurn", false);
+            animator.SetBool("Jump", false);
             animator.SetBool("Fall", false);
             if (velocity.x != 0 && state != PlayerState.JumpTurn && state != PlayerState.Jump)
             {
@@ -65,6 +73,19 @@ public partial class Player : MonoBehaviour
 
         // 最終的な移動量を適用
         rigidbody2d.velocity = velocity;
+
+        // スポットライトの方向を調整
+        var mouse = Mouse.current;
+        if (mouse != null && isRightClicking)
+        {
+            mouseDelta = mouse.delta.ReadValue().x;
+            if (Mathf.Abs(mouseDelta) >= detectionRange)
+            {
+                // マウスを動かした方へライトを向けれるようにする
+                lightDirection = (int)Mathf.Sign(mouseDelta);
+                Debug.Log(lightDirection);
+            }
+        }
     }
 
     /// <summary>
@@ -75,7 +96,6 @@ public partial class Player : MonoBehaviour
     {
         // 入力方向を取得
         moveInput = context.ReadValue<Vector2>();
-
     }
 
     /// <summary>
@@ -92,12 +112,18 @@ public partial class Player : MonoBehaviour
         }
     }
 
+    public void LightFacing(InputAction.CallbackContext context)
+    {
+        isRightClicking = context.performed;
+    }
+
 
     /// <summary>
     /// 落下状態に設定
     /// </summary>
     public void SetFallState()
     {
+        animator.SetBool("Jump", false);
         animator.SetBool("JumpTurn", false);
         state = PlayerState.Fall;
     }

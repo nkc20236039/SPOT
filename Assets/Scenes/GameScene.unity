@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3478,7 +3478,19 @@ MonoBehaviour:
     m_ActionId: 8acdf14a-0466-4134-a323-a75d0f8e4c2e
     m_ActionName: Player/Look[/Mouse/delta,/Pen/delta]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1953887545}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: LightDirection
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 64610f51-2b62-4b4b-a730-de86377bcfd6
     m_ActionName: Player/Fire[/Mouse/leftButton]
   - m_PersistentCalls:
@@ -3537,6 +3549,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2f42567e-73a0-4e48-becf-7ae271885193
     m_ActionName: Player/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e9654b33-49f6-4dbc-8c7e-0eb1132e6b56
+    m_ActionName: Player/SwitchSpotLight[/Keyboard/1]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -4068,7 +4084,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 230
   m_jumpForce: 15
-  m_gravityScale: 3
+  m_gravityScale: 5
   airborneTime: 0.1
   pickReach: 0
   parentPos: {x: 0, y: 0, z: 0}
@@ -4089,7 +4105,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 4096
-  rayRelativePos: {x: 0.2, y: -0.7, z: 0}
+  rayRelativePos: {x: 0.2, y: -0.625, z: 0}
 --- !u!95 &1953887547
 Animator:
   serializedVersion: 5

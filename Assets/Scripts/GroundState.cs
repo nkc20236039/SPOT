@@ -23,10 +23,10 @@ public class GroundState : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             RaycastHit2D hit;
-            hit = Physics2D.Raycast(rayOrigin, Vector3.down, 0.01f, layerMask);
+            hit = Physics2D.Raycast(rayOrigin, Vector3.down, 0.05f, layerMask);
 
             // デバッグ
-            if (debug) { Debug.DrawRay(rayOrigin, Vector3.down * 0.01f, Color.yellow); }
+            if (debug) { Debug.DrawRay(rayOrigin, Vector3.down * 0.05f, Color.yellow); }
 
             // 次の検索位置へ
             rayOrigin.x += -rayRelativePos.x;

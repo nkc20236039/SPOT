@@ -252,7 +252,6 @@ namespace Game.Utils.Triangulation
 
                 for (int j = 1; j < 3; ++j) // For the 2 adjacent triangles of the other 2 edges
                 {
-                    Debug.Log(triangleEdge.TriangleIndex * 3 + (triangleEdge.EdgeIndex + j) % 3);
                     int adjacentTriangle = m_adjacentTriangles[triangleEdge.TriangleIndex * 3 + (triangleEdge.EdgeIndex + j) % 3];
                     bool isAdjacentTriangleInOutline = false;
 

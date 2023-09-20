@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public partial class Player
 {
@@ -33,7 +34,7 @@ public partial class Player
             state = PlayerState.JumpTurn;
             StartCoroutine("JumpTurn");
         }
-        if(state == PlayerState.JumpTurn)
+        if (state == PlayerState.JumpTurn)
         {
             velocity.y *= 0.8f;
         }
@@ -59,6 +60,29 @@ public partial class Player
         {
             animator.SetTrigger("JumpTurn");
         }
+    }
+
+    private void ChangeSpotLightDirection()
+    {
+        Transform lightShadow = spotLight.transform.Find("Shadow");
+        Vector2 playerPosition = transform.position;
+        Vector2 spotLightPosition = lightShadow.position;
+        // ライトの位置を変更
+        spotLight.transform.position = playerPosition + -distanceToLight * lightDirection;
+
+        // ライトの向きを変更
+        Vector3 spotLightScale = spotLight.transform.localScale;
+        Vector3 shadowScale = spotLight.transform.Find("Shadow").localScale;
+        // 実効値を求める
+        spotLightScale.x = Mathf.Abs(spotLightScale.x);
+        spotLightScale.y = Mathf.Abs(spotLightScale.y);
+        spotLightScale.z = Mathf.Abs(spotLightScale.z);
+        shadowScale.z = Mathf.Abs(shadowScale.z);
+        // 入力された方向に切り替える
+        spotLightScale *= lightDirection;
+        shadowScale.z *= lightDirection;
+        spotLight.transform.localScale = spotLightScale;
+        lightShadow.localScale = shadowScale;
     }
 
     private void ChangeSpotLight(int lightNumber)

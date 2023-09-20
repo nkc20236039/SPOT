@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEditor.Rendering.Universal;
+using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,6 +34,7 @@ public partial class Player : MonoBehaviour
     [SerializeField] float detectionRange;
     [SerializeField] Vector2 distanceToLight;
     [SerializeField] GameObject spotLight;
+    [SerializeField] LayerMask stageLayer;
 
     void Start()
     {
@@ -40,7 +43,7 @@ public partial class Player : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         // 現在のvelocityを取得
         velocity = rigidbody2d.velocity;
@@ -79,8 +82,7 @@ public partial class Player : MonoBehaviour
         // カメラの移動場所を設定
         if (haveLight)
         {
-            Vector2 playerPosition = transform.position;
-            spotLight.transform.position = playerPosition + -distanceToLight * lightDirection;
+            ChangeSpotLightDirection();
         }
         // 最終的な移動量を適用
         rigidbody2d.velocity = velocity;
@@ -123,6 +125,7 @@ public partial class Player : MonoBehaviour
             state = PlayerState.Jump;
             animator.SetBool("Jump", true);
         }
+
     }
 
     /// <summary>
@@ -137,7 +140,6 @@ public partial class Player : MonoBehaviour
     public void InteractLight(InputAction.CallbackContext context)
     {
         if (!context.performed) { return; }
-        Debug.Log("F");
         haveLight = haveLight ? false : true;
     }
 
@@ -150,5 +152,4 @@ public partial class Player : MonoBehaviour
         animator.SetBool("JumpTurn", false);
         state = PlayerState.Fall;
     }
-
 }

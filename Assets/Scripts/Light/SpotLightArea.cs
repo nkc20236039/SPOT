@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.tvOS;
+using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 using static DelaunayTriangulationTester;
 
@@ -29,6 +32,7 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private GameObject cameraFrame;        // カメラフレームのコライダーを取得する用
     [SerializeField] private float reachColDistance;
     [SerializeField] private Player playerScript;
+    [SerializeField] private Texture2D shadowTexture;
 
     private Vector2 oldPosition;        // 1フレーム前の位置
 
@@ -66,7 +70,6 @@ public class SpotLightArea : MonoBehaviour
         List<Vector2> plusArrivalPoint = new List<Vector2>();    // プラス方向の頂点
         List<Vector2> minusArrivalPoint = new List<Vector2>();   // マイナス方向の頂点
         List<Vector2> completionPoint = new List<Vector2>();    // 完成した頂点群
-        float[] oldPointDistance = { 0f, 0f };
 
 
         // 影座標の情報を取得
@@ -78,8 +81,8 @@ public class SpotLightArea : MonoBehaviour
             Vector2[] lightVertex =
             {
                 lightPosition,
-                lightPosition + SetReachCollider()[0] * 50,
-                lightPosition + SetReachCollider()[1] * 50
+                lightPosition + (hitASide.point - lightPosition) * 50,
+                lightPosition + (hitBSide.point - lightPosition) * 50
             };
             if (objectEdgeScript.IsExposedToLight(lightVertex[0], lightVertex[1], lightVertex[2]))
             {
@@ -129,10 +132,16 @@ public class SpotLightArea : MonoBehaviour
             }
         }
 
+        float[] oldPointDistance = { 0f, 0f };
         // プラスの座標情報を完成頂点リストに並び変える
-        if(plusArrivalPoint.Count > 0)
+        if (plusArrivalPoint.Count > 0)
         {
-            oldPointDistance[0] = reachColDistance - completionPoint[1].x;
+            Debug.Log(hitASide.transform.gameObject);
+            if(hitASide.transform.gameObject != cameraFrame)
+            {
+                oldPointDistance[0] = gameObject.transform.InverseTransformPoint(hitASide.point).x - reachColDistance;
+            }
+
             for (int i = 0; i < plusArrivalPoint.Count; i++)
             {
                 completionPoint.AddRange
@@ -149,9 +158,13 @@ public class SpotLightArea : MonoBehaviour
         }
 
         // マイナスの座標情報を完成頂点リストに並び変える
-        if( minusArrivalPoint.Count > 0)
+        if (minusArrivalPoint.Count > 0)
         {
-            oldPointDistance[1] = reachColDistance - minusArrivalPoint[minusArrivalPoint.Count - 1].x;
+            if (hitBSide.transform.gameObject != cameraFrame)
+            {
+                oldPointDistance[1] = gameObject.transform.InverseTransformPoint(hitBSide.point).x - reachColDistance;
+            }
+            Debug.Log($"minus {oldPointDistance[1]}");
             minusArrivalPoint.Reverse();
             List<Vector2> arrivalPointStorage = new List<Vector2>();
             for (int i = 0; i < minusArrivalPoint.Count; i++)
@@ -173,18 +186,37 @@ public class SpotLightArea : MonoBehaviour
         }
         completionPoint.Add(gameObject.transform.InverseTransformPoint(hitBSide.point));
 
+        // 重なっている座標を削除
+        Vector2[] checkConflict = completionPoint.ToArray();
+        int quantityRemoved = 0;
+        Vector2 oldPoint = completionPoint[completionPoint.Count - 1];
+        for (int i = 0; i < checkConflict.Length; i++)
+        {
+            if (checkConflict[i] == oldPoint)
+            {
+                // リストの大きさに合わせて削除する
+                completionPoint.RemoveAt(i - quantityRemoved);
+                quantityRemoved++;
+            }
+            oldPoint = checkConflict[i];
+        }
+
+
         // ポリゴンコライダーに反映する
         lightPolygon.points = completionPoint.ToArray();
 
         // メッシュ表示
         meshGenerateScript.RunTestPolygonColliders();
 
+        // シェーダーに適用
+        Material material = new Material(Shader.Find("Unlit/SimpleTexture"));
+        material.SetTexture("_MainTex", shadowTexture);
+        MeshRenderer renderer = transform.Find("Shadow").gameObject.GetComponent<MeshRenderer>();
+        renderer.material = material;
 
         // 最後に今回の位置を保存
         oldPosition = lightPosition;
         completionPoint.Clear();
-
-
     }
 
     /// <summary>
@@ -214,14 +246,14 @@ public class SpotLightArea : MonoBehaviour
     /// <summary>
     /// 配列の要素を順番に合うように並び変える
     /// </summary>
-    /// <param name="pointArray"></param>
-    /// <param name="referencePoint"></param>
-    /// <param name="oldDistance"></param>
+    /// <param name="pointArray">オブジェクトの角と影の終点を入れている配列</param>
+    /// <param name="referencePoint">比較する地点</param>
+    /// <param name="oldDistance">前回の距離</param>
     private Vector2[] SortImitateShadow(Vector2[] pointArray, float referencePoint, ref float oldDistance, GameObject shadowHitObject)
     {
         // 角から基準までの距離を比較する
-        float nowDistance = referencePoint - pointArray[0].x;
-        if (oldDistance < nowDistance)
+        float nowDistance = pointArray[0].x - referencePoint;
+        if (oldDistance > nowDistance)
         {
             // 前回より今回の方が大きかったら角と影を逆転する
             Vector2 temp = pointArray[0];
@@ -255,9 +287,21 @@ public class SpotLightArea : MonoBehaviour
         pointsCalculation[1] = -SpotAngle / 2 * Mathf.Deg2Rad;
 
         // Y座標を求める
-        points[0].y = Mathf.Tan(pointsCalculation[0]) * (reachColDistance + 1);
-        points[1].y = Mathf.Tan(pointsCalculation[1]) * (reachColDistance - 1);
+        points[0].y = Mathf.Tan(pointsCalculation[0]) * reachColDistance;
+        points[1].y = Mathf.Tan(pointsCalculation[1]) * reachColDistance;
 
         return points;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            for (int i = 0; i < lightPolygon.points.Length; i++)
+            {
+                Handles.Label(lightPolygon.points[i], $"[{i}]");
+            }
+        }
+
     }
 }

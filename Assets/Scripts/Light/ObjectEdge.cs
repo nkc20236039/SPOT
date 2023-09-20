@@ -81,7 +81,7 @@ public class ObjectEdge : MonoBehaviour
     /// <returns>“–‚½‚Á‚Ä‚¢‚½‚çtrue</returns>
     public bool IsExposedToLight(Vector2 lightPoint, Vector2 pointA, Vector2 pointB)
     {
-        Debug.Log($"{lightPoint}\n{pointA}\n{pointB}");
+        // Debug.Log($"{lightPoint}\n{pointA}\n{pointB}");
 
         Vector2 edgePoint = transform.position;
         Vector2 direction = (edgePoint - lightPoint).normalized;

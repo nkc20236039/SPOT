@@ -80,7 +80,7 @@ public partial class Player : MonoBehaviour
         if (haveLight)
         {
             Vector2 playerPosition = transform.position;
-            spotLight.transform.position = playerPosition + distanceToLight * lightDirection;
+            spotLight.transform.position = playerPosition + -distanceToLight * lightDirection;
         }
         // 最終的な移動量を適用
         rigidbody2d.velocity = velocity;
@@ -137,8 +137,8 @@ public partial class Player : MonoBehaviour
     public void InteractLight(InputAction.CallbackContext context)
     {
         if (!context.performed) { return; }
-
-        haveLight = true ? false : true;
+        Debug.Log("F");
+        haveLight = haveLight ? false : true;
     }
 
     /// <summary>

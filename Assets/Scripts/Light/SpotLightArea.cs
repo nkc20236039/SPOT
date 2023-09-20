@@ -208,12 +208,6 @@ public class SpotLightArea : MonoBehaviour
         // メッシュ表示
         meshGenerateScript.RunTestPolygonColliders();
 
-        // シェーダーに適用
-        Material material = new Material(Shader.Find("Unlit/SimpleTexture"));
-        material.SetTexture("_MainTex", shadowTexture);
-        MeshRenderer renderer = transform.Find("Shadow").gameObject.GetComponent<MeshRenderer>();
-        renderer.material = material;
-
         // 最後に今回の位置を保存
         oldPosition = lightPosition;
         completionPoint.Clear();

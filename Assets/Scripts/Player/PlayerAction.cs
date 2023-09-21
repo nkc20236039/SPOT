@@ -59,6 +59,7 @@ public partial class Player
         if (!groundStateScript.IsGround())
         {
             animator.SetTrigger("JumpTurn");
+            animator.SetTrigger("JumpTurn");
         }
     }
 

@@ -108,6 +108,10 @@ public partial class Player : MonoBehaviour
     {
         // “ü—Í•ûŒü‚ðŽæ“¾
         moveInput = context.ReadValue<Vector2>();
+        if (groundStateScript.IsGround())
+        {
+            state = PlayerState.Run;
+        }
     }
 
     /// <summary>

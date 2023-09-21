@@ -135,6 +135,7 @@ public class DelaunayTriangulationTester : MonoBehaviour
         Mesh mesh = new Mesh();
         mesh.subMeshCount = 1;
         mesh.SetVertices(vertices);
+        mesh.SetUVs(0, CreateMeshUV(vertices.ToArray()));
         mesh.SetIndices(indices, MeshTopology.Triangles, 0);
         return mesh;
     }
@@ -165,17 +166,45 @@ public class DelaunayTriangulationTester : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(m_outputTriangles == null || !DrawTriangles)
+        if (m_outputTriangles == null || !DrawTriangles)
             return;
 
         Color triangleColor = Color.black;
 
-        for(int i = 0; i < m_outputTriangles.Count; ++i)
+        for (int i = 0; i < m_outputTriangles.Count; ++i)
         {
             Debug.DrawLine(m_outputTriangles[i].p0, m_outputTriangles[i].p1, triangleColor);
             Debug.DrawLine(m_outputTriangles[i].p1, m_outputTriangles[i].p2, triangleColor);
             Debug.DrawLine(m_outputTriangles[i].p2, m_outputTriangles[i].p0, triangleColor);
         }
+    }
+
+    private Vector2[] CreateMeshUV(Vector3[] vertices)
+    {
+        Camera renderingCamera = Camera.main;
+        Vector2[] UVs = new Vector2[vertices.Length];
+        // カメラサイズを取得
+        float cameraHeight = renderingCamera.orthographicSize;
+        // カメラの横幅
+        float cameraWidth = cameraHeight * renderingCamera.aspect;
+        Vector2 cameraPosition = renderingCamera.transform.position;
+        // カメラの左下取得
+        Vector2 cameraOriginPosition = cameraPosition - new Vector2(cameraWidth, cameraHeight);
+        // カメラの左下を原点としたライトの位置を求める
+        Vector2 lightPosition = transform.position;
+        Vector2 cameraToLightVector = lightPosition - cameraOriginPosition;
+
+        // 頂点をUV用の座標に変換
+        for (int i = 0; i < UVs.Length; i++)
+        {
+            UVs[i] = new Vector2
+            (
+                (vertices[i].x + cameraToLightVector.x / 4) / cameraWidth,
+                (vertices[i].y + cameraToLightVector.y / 4) / cameraHeight
+            );
+        }
+
+        return UVs;
     }
 
 #if UNITY_EDITOR
@@ -193,7 +222,7 @@ public class DelaunayTriangulationTester : MonoBehaviour
 
             base.OnInspectorGUI();
 
-            if(GUILayout.Button("Triangulate!"))
+            if (GUILayout.Button("Triangulate!"))
             {
                 ((DelaunayTriangulationTester)target).RunTestPolygonColliders();
             }

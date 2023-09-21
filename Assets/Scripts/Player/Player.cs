@@ -96,7 +96,6 @@ public partial class Player : MonoBehaviour
             {
                 // マウスを動かした方へライトを向けれるようにする
                 lightDirection = (int)Mathf.Sign(mouseDelta);
-                Debug.Log(lightDirection);
             }
         }
     }

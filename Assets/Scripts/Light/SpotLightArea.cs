@@ -1,11 +1,6 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.tvOS;
-using UnityEngine.UIElements;
-using UnityEngine.UIElements.Experimental;
-using static DelaunayTriangulationTester;
 
 public class SpotLightArea : MonoBehaviour
 {
@@ -32,7 +27,9 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private GameObject cameraFrame;        // カメラフレームのコライダーを取得する用
     [SerializeField] private float reachColDistance;
     [SerializeField] private Player playerScript;
-    [SerializeField] private Texture2D shadowTexture;
+    public Texture2D shadowTexture;
+
+
 
     private Vector2 oldPosition;        // 1フレーム前の位置
 
@@ -50,6 +47,7 @@ public class SpotLightArea : MonoBehaviour
         // ライトの初期位置など取得
         LightSetting();
         meshGenerateScript = GetComponent<DelaunayTriangulationTester>();
+
     }
 
     void Update()
@@ -136,8 +134,7 @@ public class SpotLightArea : MonoBehaviour
         // プラスの座標情報を完成頂点リストに並び変える
         if (plusArrivalPoint.Count > 0)
         {
-            Debug.Log(hitASide.transform.gameObject);
-            if(hitASide.transform.gameObject != cameraFrame)
+            if (hitASide.transform.gameObject != cameraFrame)
             {
                 oldPointDistance[0] = gameObject.transform.InverseTransformPoint(hitASide.point).x - reachColDistance;
             }
@@ -164,7 +161,6 @@ public class SpotLightArea : MonoBehaviour
             {
                 oldPointDistance[1] = gameObject.transform.InverseTransformPoint(hitBSide.point).x - reachColDistance;
             }
-            Debug.Log($"minus {oldPointDistance[1]}");
             minusArrivalPoint.Reverse();
             List<Vector2> arrivalPointStorage = new List<Vector2>();
             for (int i = 0; i < minusArrivalPoint.Count; i++)
@@ -207,6 +203,14 @@ public class SpotLightArea : MonoBehaviour
 
         // メッシュ表示
         meshGenerateScript.RunTestPolygonColliders();
+
+        // シェーダーをロードしてMaterialを生成
+        Material material = new Material(Shader.Find("Unlit/SimpleTexture"));
+        material.SetTexture("_MainTex", shadowTexture);
+
+        // MeshRendererにMaterialをセット
+        MeshRenderer renderer = transform.Find("Shadow").GetComponent<MeshRenderer>();
+        renderer.material = material;
 
         // 最後に今回の位置を保存
         oldPosition = lightPosition;

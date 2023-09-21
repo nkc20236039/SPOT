@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ShadowMaterial
-  m_Shader: {fileID: 4800000, guid: 9720ae2abe2ae9547a566d3ea2d77c89, type: 3}
+  m_Name: ShadowTexture
+  m_Shader: {fileID: 4800000, guid: 0b6f59b985c19584090acec0fb442a0e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []

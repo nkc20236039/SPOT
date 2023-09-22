@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using UnityEditor.Rendering.Universal;
-using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -108,10 +103,7 @@ public partial class Player : MonoBehaviour
     {
         // “ü—Í•ûŒü‚ğæ“¾
         moveInput = context.ReadValue<Vector2>();
-        if (groundStateScript.IsGround())
-        {
-            state = PlayerState.Run;
-        }
+        isRunning = context.performed;
     }
 
     /// <summary>
@@ -125,10 +117,8 @@ public partial class Player : MonoBehaviour
         if (groundStateScript.IsGround())
         {
             // ’nã‚É‚¢‚ê‚ÎƒWƒƒƒ“ƒv
-            state = PlayerState.Jump;
-            animator.SetBool("Jump", true);
+            isJumping = true;
         }
-
     }
 
     /// <summary>
@@ -143,7 +133,7 @@ public partial class Player : MonoBehaviour
     public void InteractLight(InputAction.CallbackContext context)
     {
         if (!context.performed) { return; }
-        haveLight = haveLight ? false : true;
+        haveLight = !haveLight;
     }
 
     /// <summary>

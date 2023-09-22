@@ -27,18 +27,12 @@ public partial class Player
         velocity = groundStateScript.Slope(velocity);
 
         // ジャンプ
-        if (state == PlayerState.Jump)
+        if (isJumping)
         {
             velocity.y = m_jumpForce;
             // ジャンプ回転の動作を開始する
-            state = PlayerState.JumpTurn;
             StartCoroutine("JumpTurn");
         }
-        if (state == PlayerState.JumpTurn)
-        {
-            velocity.y *= 0.8f;
-        }
-
 
         if (moveInput.x != 0)
         {
@@ -49,17 +43,23 @@ public partial class Player
             transform.localScale = scale;
         }
 
+        // ジャンプ中じゃなければ重力をつける
+        if (!isJumpTurn && !isJumping)
+        {
+            velocity.y -= m_gravityScale;
+            isFalling = true;
+        }
     }
 
     private IEnumerator JumpTurn()
     {
         yield return new WaitForSeconds(airborneTime);
-        animator.SetBool("Jump", false);
-        // 滞空時間を超えたら回転して落下する
-        if (!groundStateScript.IsGround())
+
+        // 移動していなければ回転する
+        if (!isRunning)
         {
-            animator.SetTrigger("JumpTurn");
-            animator.SetTrigger("JumpTurn");
+            isJumpTurn = true;
+            isJumping = false;
         }
     }
 

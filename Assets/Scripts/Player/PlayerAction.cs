@@ -4,9 +4,10 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+
+
 public partial class Player
 {
-
     // パラメーター
     [Header("プレイヤーに影響する力")]
     [SerializeField] private float m_speed;         // プレイヤー測度
@@ -19,7 +20,7 @@ public partial class Player
     [SerializeField] private Vector3 parentPos;     // 持っている時のプレイヤーからの距離
     [SerializeField] private GameObject[] spotlight;// シーンに存在するスポットライト
 
-    private void PlayerMove()
+    private void Movement()
     {
         // プレイヤーに移動量を加算
         velocity.x = moveInput.x * m_speed * Time.deltaTime;
@@ -27,11 +28,10 @@ public partial class Player
         velocity = groundStateScript.Slope(velocity);
 
         // ジャンプ
-        if (isJumping)
+        if (isJump && jumpCoroutine == null)
         {
-            velocity.y = m_jumpForce;
-            // ジャンプ回転の動作を開始する
-            StartCoroutine("JumpTurn");
+            Debug.Log("run");
+            jumpCoroutine = StartCoroutine(Jump());
         }
 
         if (moveInput.x != 0)
@@ -42,25 +42,31 @@ public partial class Player
             scale.x = (0 < moveInput.x) ? scale.x : -scale.x;
             transform.localScale = scale;
         }
+    }
 
-        // ジャンプ中じゃなければ重力をつける
-        if (!isJumpTurn && !isJumping)
+    private IEnumerator Jump()
+    {
+
+        // ジャンプ
+        velocity.y += m_jumpForce;
+        PlayAnimation(animationType.Jump);
+        // ジャンプ回転の動作を開始する
+        yield return new WaitForSeconds(airborneTime);
+        if (velocity.x == 0)
         {
-            velocity.y -= m_gravityScale;
-            isFalling = true;
+            // 動いていなければ回転する
+            PlayAnimation(animationType.JumpTurn, 1);
         }
     }
 
-    private IEnumerator JumpTurn()
+    /// <summary>
+    /// 落下状態に設定
+    /// </summary>
+    public void SetFall()
     {
-        yield return new WaitForSeconds(airborneTime);
-
-        // 移動していなければ回転する
-        if (!isRunning)
-        {
-            isJumpTurn = true;
-            isJumping = false;
-        }
+        // 重力を有効化
+        onGravity = true;
+        jumpCoroutine = null;
     }
 
     private void ChangeSpotLightDirection()

@@ -4,31 +4,35 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+
+
 public partial class Player
 {
-    private bool isRunning;     // 地面にいるとき
-    private bool isJumping;     // ジャンプしている
-    private bool isJumpTurn;    // 止まってジャンプ
-    private bool isIdle;        // 地面で止まっている
-    private bool isFalling;     // 空中で落下
-
-    private void SetAnimation()
+    private enum animationType
     {
-        if (groundStateScript.IsGround())
+        Idle,
+        Run,
+        Jump,
+        JumpTurn,
+        Fall,
+    }
+
+    private animationType playingAnimation;
+    private int nowPriority;
+
+    private void PlayAnimation(animationType animation, int priority = 0)
+    {
+        if (priority < nowPriority || animation == playingAnimation || priority != -1)
         {
-            // 動いているとき
-            animator.SetBool("Run", isRunning && !isJumping);
-            // アニメーターでアイドル時は実行される
-            // animator.SetBool("Idle", isIdle);
-            // ジャンプ
-            animator.SetBool("Jump", isJumping);
+            // 優先度が低かったら終了する
+            return;
         }
-        else
-        {
-            // 空中でジャンプ回転
-            animator.SetBool("JumpTurn", isJumpTurn);
-            // 空中でジャンプ状態じゃない
-            animator.SetBool("Fall", isFalling);
-        }
+
+        // 優先度が高く、
+        // 現在再生中のアニメーションと異なった場合
+        // 該当のアニメーションを実行する
+        animator.Play(animation.ToString());
+        playingAnimation = animation;
+
     }
 }

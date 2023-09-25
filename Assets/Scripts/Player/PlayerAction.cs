@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public partial class Player
 {
-
     // パラメーター
     [Header("プレイヤーに影響する力")]
     [SerializeField] private float m_speed;         // プレイヤー測度
@@ -19,26 +15,12 @@ public partial class Player
     [SerializeField] private Vector3 parentPos;     // 持っている時のプレイヤーからの距離
     [SerializeField] private GameObject[] spotlight;// シーンに存在するスポットライト
 
-    private void PlayerMove()
+    private void Movement()
     {
         // プレイヤーに移動量を加算
         velocity.x = moveInput.x * m_speed * Time.deltaTime;
         // 斜面だった場合にベクトルを変更する
         velocity = groundStateScript.Slope(velocity);
-
-        // ジャンプ
-        if (state == PlayerState.Jump)
-        {
-            velocity.y = m_jumpForce;
-            // ジャンプ回転の動作を開始する
-            state = PlayerState.JumpTurn;
-            StartCoroutine("JumpTurn");
-        }
-        if (state == PlayerState.JumpTurn)
-        {
-            velocity.y *= 0.8f;
-        }
-
 
         if (moveInput.x != 0)
         {
@@ -49,16 +31,28 @@ public partial class Player
             transform.localScale = scale;
         }
 
-    }
-
-    private IEnumerator JumpTurn()
-    {
-        yield return new WaitForSeconds(airborneTime);
-        animator.SetBool("Jump", false);
-        // 滞空時間を超えたら回転して落下する
-        if (!groundStateScript.IsGround())
+        if (isJump)
         {
-            animator.SetTrigger("JumpTurn");
+            velocity.y = m_jumpForce;
+            isJump = false;
+        }
+
+        if (isFall)
+        {
+            velocity.y -= m_gravityScale;
+            isFall = false;
+        }
+
+        if (groundStateScript.IsGround())
+        {
+            if (velocity.y < 0)
+            {
+                PlayAnimation(animationType.Fall);
+            }
+            else if (velocity.y > 0)
+            {
+                PlayAnimation(animationType.Jump);
+            }
         }
     }
 

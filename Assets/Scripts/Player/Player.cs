@@ -1,19 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using UnityEditor.Rendering.Universal;
-using UnityEditor.UI;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-enum PlayerState
-{
-    Idle,
-    Run,
-    Jump,
-    JumpTurn,
-    Fall,
-}
 
 public partial class Player : MonoBehaviour
 {
@@ -21,7 +7,6 @@ public partial class Player : MonoBehaviour
     public Vector2 lightCallPosition;
 
     private Vector2 moveInput;                // 移動方向取得
-    private PlayerState state;
 
     private GroundState groundStateScript;  // 地面チェックscript
     private Rigidbody2D rigidbody2d;        // rigidbody
@@ -29,7 +14,11 @@ public partial class Player : MonoBehaviour
     private Animator animator;
     private bool isRightClicking;
     private bool haveLight = true;                 // ライトの所持状態
+    private bool onGravity;                 // 重力をつける
+    private bool isJump;                    // ジャンプ
+    private bool isFall;
     private float mouseDelta;               // マウスの移動量
+    private Coroutine jumpCoroutine;
 
     [SerializeField] float detectionRange;
     [SerializeField] Vector2 distanceToLight;
@@ -45,110 +34,56 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
-        // 現在のvelocityを取得
-        velocity = rigidbody2d.velocity;
+        // 左右入力取得
+        moveInput.x = Input.GetAxisRaw("Horizontal");
 
-        // 地上判定
+        // 重力がある場合、ない場合の処理
         if (groundStateScript.IsGround())
         {
-            animator.SetBool("JumpTurn", false);
-            animator.SetBool("Jump", false);
-            animator.SetBool("Fall", false);
-            if (velocity.x != 0 && state != PlayerState.JumpTurn && state != PlayerState.Jump)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                // ジャンプしていない&
-                // 移動してたら歩きアニメーションをつける
-                animator.SetBool("Run", true);
+                isJump = true;
+            }
+
+            if (moveInput.x != 0)
+            {
+                PlayAnimation(animationType.Run);
             }
             else
             {
-                // 移動してなかったら
-                animator.SetBool("Run", false);
+                PlayAnimation(animationType.Idle);
             }
         }
         else
         {
-            if (state != PlayerState.JumpTurn)
-            {
-                // 落下状態のとき重力を設定
-                velocity.y = -m_gravityScale;
-                animator.SetBool("Fall", true);
-            }
+            isFall = true;
         }
 
-        // プレイヤーの移動量
-        PlayerMove();
-
-        // カメラの移動場所を設定
+        // ライトの移動場所を設定
         if (haveLight)
         {
             ChangeSpotLightDirection();
         }
-        // 最終的な移動量を適用
-        rigidbody2d.velocity = velocity;
 
         // スポットライトの方向を調整
-        var mouse = Mouse.current;
-        if (mouse != null && isRightClicking)
+        mouseDelta = Input.GetAxis("Mouse X");
+
+        if (Mathf.Abs(mouseDelta) >= detectionRange && Input.GetMouseButton(1))
         {
-            mouseDelta = mouse.delta.ReadValue().x;
-            if (Mathf.Abs(mouseDelta) >= detectionRange)
-            {
-                // マウスを動かした方へライトを向けれるようにする
-                lightDirection = (int)Mathf.Sign(mouseDelta);
-            }
+            // マウスを動かした方へライトを向けれるようにする
+            lightDirection = (int)Mathf.Sign(mouseDelta);
         }
     }
 
-    /// <summary>
-    /// 左右の入力取得
-    /// </summary>
-    /// <param name="context"></param>
-    public void OnMove(InputAction.CallbackContext context)
+    private void FixedUpdate()
     {
-        // 入力方向を取得
-        moveInput = context.ReadValue<Vector2>();
-    }
+        // 現在のvelocityを取得
+        velocity = rigidbody2d.velocity;
 
-    /// <summary>
-    /// ジャンプの入力取得
-    /// </summary>
-    /// <param name="context"></param>
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (!context.performed) { return; }
+        // プレイヤーの移動量
+        Movement();
 
-        if (groundStateScript.IsGround())
-        {
-            // 地上にいればジャンプ
-            state = PlayerState.Jump;
-            animator.SetBool("Jump", true);
-        }
-
-    }
-
-    /// <summary>
-    /// 右クリック検知
-    /// </summary>
-    /// <param name="context"></param>
-    public void LightFacing(InputAction.CallbackContext context)
-    {
-        isRightClicking = context.performed;
-    }
-
-    public void InteractLight(InputAction.CallbackContext context)
-    {
-        if (!context.performed) { return; }
-        haveLight = haveLight ? false : true;
-    }
-
-    /// <summary>
-    /// 落下状態に設定
-    /// </summary>
-    public void SetFallState()
-    {
-        animator.SetBool("Jump", false);
-        animator.SetBool("JumpTurn", false);
-        state = PlayerState.Fall;
+        // 最終的な移動量を適用
+        rigidbody2d.velocity = velocity;
     }
 }

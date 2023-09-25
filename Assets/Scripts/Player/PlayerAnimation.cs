@@ -18,21 +18,16 @@ public partial class Player
     }
 
     private animationType playingAnimation;
-    private int nowPriority;
 
-    private void PlayAnimation(animationType animation, int priority = 0)
+    private void PlayAnimation(animationType animation)
     {
-        if (priority < nowPriority || animation == playingAnimation || priority != -1)
+        if (animation != playingAnimation)
         {
-            // 優先度が低かったら終了する
-            return;
+            // 現在再生中のアニメーションと異なった場合
+            // 該当のアニメーションを実行する
+            animator.Play(animation.ToString());
+            playingAnimation = animation;
         }
-
-        // 優先度が高く、
-        // 現在再生中のアニメーションと異なった場合
-        // 該当のアニメーションを実行する
-        animator.Play(animation.ToString());
-        playingAnimation = animation;
 
     }
 }

@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
-
-
 
 public partial class Player
 {
@@ -27,13 +22,6 @@ public partial class Player
         // 斜面だった場合にベクトルを変更する
         velocity = groundStateScript.Slope(velocity);
 
-        // ジャンプ
-        if (isJump && jumpCoroutine == null)
-        {
-            Debug.Log("run");
-            jumpCoroutine = StartCoroutine(Jump());
-        }
-
         if (moveInput.x != 0)
         {
             // スケールを移動方向に合わせて変更する
@@ -42,31 +30,30 @@ public partial class Player
             scale.x = (0 < moveInput.x) ? scale.x : -scale.x;
             transform.localScale = scale;
         }
-    }
 
-    private IEnumerator Jump()
-    {
-
-        // ジャンプ
-        velocity.y += m_jumpForce;
-        PlayAnimation(animationType.Jump);
-        // ジャンプ回転の動作を開始する
-        yield return new WaitForSeconds(airborneTime);
-        if (velocity.x == 0)
+        if (isJump)
         {
-            // 動いていなければ回転する
-            PlayAnimation(animationType.JumpTurn, 1);
+            velocity.y = m_jumpForce;
+            isJump = false;
         }
-    }
 
-    /// <summary>
-    /// 落下状態に設定
-    /// </summary>
-    public void SetFall()
-    {
-        // 重力を有効化
-        onGravity = true;
-        jumpCoroutine = null;
+        if (isFall)
+        {
+            velocity.y -= m_gravityScale;
+            isFall = false;
+        }
+
+        if (groundStateScript.IsGround())
+        {
+            if (velocity.y < 0)
+            {
+                PlayAnimation(animationType.Fall);
+            }
+            else if (velocity.y > 0)
+            {
+                PlayAnimation(animationType.Jump);
+            }
+        }
     }
 
     private void ChangeSpotLightDirection()

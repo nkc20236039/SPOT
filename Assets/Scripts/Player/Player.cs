@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-
 
 
 public partial class Player : MonoBehaviour
@@ -18,6 +16,7 @@ public partial class Player : MonoBehaviour
     private bool haveLight = true;                 // ライトの所持状態
     private bool onGravity;                 // 重力をつける
     private bool isJump;                    // ジャンプ
+    private bool isFall;
     private float mouseDelta;               // マウスの移動量
     private Coroutine jumpCoroutine;
 
@@ -35,98 +34,56 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
-        // 現在のvelocityを取得
-        velocity = rigidbody2d.velocity;
+        // 左右入力取得
+        moveInput.x = Input.GetAxisRaw("Horizontal");
 
-        // ジャンプ中に地面についた時
+        // 重力がある場合、ない場合の処理
         if (groundStateScript.IsGround())
         {
-            // 再生中のコルーチンを止める
-            if (jumpCoroutine != null)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                StopCoroutine(jumpCoroutine);
+                isJump = true;
             }
 
-            if (velocity.x == 0f)
+            if (moveInput.x != 0)
+            {
+                PlayAnimation(animationType.Run);
+            }
+            else
             {
                 PlayAnimation(animationType.Idle);
             }
         }
-        else if (jumpCoroutine == null)
+        else
         {
-            onGravity = true;
+            isFall = true;
         }
 
-        // プレイヤーの移動量
-        Movement();
-
-        // 重力をつける
-        if (onGravity)
-        {
-            velocity.y -= m_gravityScale;
-            PlayAnimation(animationType.Fall, -1);
-        }
-
-        // カメラの移動場所を設定
+        // ライトの移動場所を設定
         if (haveLight)
         {
             ChangeSpotLightDirection();
         }
-        // 最終的な移動量を適用
-        rigidbody2d.velocity = velocity;
 
         // スポットライトの方向を調整
-        var mouse = Mouse.current;
-        if (mouse != null && isRightClicking)
+        mouseDelta = Input.GetAxis("Mouse X");
+
+        if (Mathf.Abs(mouseDelta) >= detectionRange && Input.GetMouseButton(1))
         {
-            mouseDelta = mouse.delta.ReadValue().x;
-            if (Mathf.Abs(mouseDelta) >= detectionRange)
-            {
-                // マウスを動かした方へライトを向けれるようにする
-                lightDirection = (int)Mathf.Sign(mouseDelta);
-            }
+            // マウスを動かした方へライトを向けれるようにする
+            lightDirection = (int)Mathf.Sign(mouseDelta);
         }
     }
 
-    /// <summary>
-    /// 左右の入力取得
-    /// </summary>
-    /// <param name="context"></param>
-    public void OnMove(InputAction.CallbackContext context)
+    private void FixedUpdate()
     {
-        // 入力方向を取得
-        moveInput = context.ReadValue<Vector2>();
-        PlayAnimation(animationType.Run);
+        // 現在のvelocityを取得
+        velocity = rigidbody2d.velocity;
+
+        // プレイヤーの移動量
+        Movement();
+
+        // 最終的な移動量を適用
+        rigidbody2d.velocity = velocity;
     }
-
-    /// <summary>
-    /// ジャンプの入力取得
-    /// </summary>
-    /// <param name="context"></param>
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (!context.performed) { return; }
-        if (groundStateScript.IsGround())
-        {
-            // 地上にいればジャンプ
-            isJump = context.performed;
-        }
-    }
-
-    /// <summary>
-    /// 右クリック検知
-    /// </summary>
-    /// <param name="context"></param>
-    public void LightFacing(InputAction.CallbackContext context)
-    {
-        isRightClicking = context.performed;
-    }
-
-    public void InteractLight(InputAction.CallbackContext context)
-    {
-        if (!context.performed) { return; }
-        haveLight = !haveLight;
-    }
-
-
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2257,7 +2257,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1071461733
 MeshFilter:
@@ -2275,7 +2275,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1071461730}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6081,88 +6081,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - {m_Target: {fileID: 1953887545}, m_TargetAssemblyTypeName: Player, Assembly-CSharp, m_MethodName: OnMove, m_Mode: 0, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
-    m_CallsDirty: 1
-    m_ActionId: a70c591b-9668-4d1a-8cbe-ec6e9ae5ac60
-    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 8acdf14a-0466-4134-a323-a75d0f8e4c2e
-    m_ActionName: Player/Look[/Mouse/delta,/Pen/delta]
-  - m_PersistentCalls:
-      m_Calls:
-      - {m_Target: {fileID: 1953887545}, m_TargetAssemblyTypeName: Player, Assembly-CSharp, m_MethodName: LightFacing, m_Mode: 0, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
-    m_CallsDirty: 1
-    m_ActionId: 64610f51-2b62-4b4b-a730-de86377bcfd6
-    m_ActionName: Player/Fire[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: c6b4e675-b594-47ad-b3c3-61fcc14efab3
-    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 61250af0-64d5-4fb2-9517-0519cb952ba1
-    m_ActionName: UI/Submit[/Keyboard/enter]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 091dc404-2640-4c4a-9fd9-81dfb5d8eea6
-    m_ActionName: UI/Cancel[/Keyboard/escape]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 2301bfc7-8aca-4f17-a102-abaaf48b7f6d
-    m_ActionName: UI/Point[/Mouse/position,/Pen/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 49c9ad68-51b6-493c-837f-4efdb5af6f25
-    m_ActionName: UI/Click[/Mouse/leftButton,/Pen/tip]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 1f20c181-de5c-46d1-a359-910148f8ca63
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: cba7df41-c212-4fd4-9355-176ffa0f0d89
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: dd2720d4-5be6-410d-bb73-c1ca9ec54b94
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 0b8cd713-f181-44c4-89c2-223461ce7c60
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-    m_ActionId: 353e104a-9024-4fa1-a5f0-7686a56ae292
-    m_ActionName: UI/TrackedDeviceOrientation
-  - m_PersistentCalls:
-      m_Calls:
-      - {m_Target: {fileID: 1953887545}, m_TargetAssemblyTypeName: Player, Assembly-CSharp, m_MethodName: OnJump, m_Mode: 0, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
-    m_CallsDirty: 1
-    m_ActionId: 2f42567e-73a0-4e48-becf-7ae271885193
-    m_ActionName: Player/Jump[/Keyboard/space]
-  - m_PersistentCalls:
-      m_Calls:
-      - {m_Target: {fileID: 1953887545}, m_TargetAssemblyTypeName: Player, Assembly-CSharp, m_MethodName: LightFacing, m_Mode: 0, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
-    m_CallsDirty: 1
-    m_ActionId: e9654b33-49f6-4dbc-8c7e-0eb1132e6b56
-    m_ActionName: Player/SwitchSpotLight[/Keyboard/1]
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
+      - {m_Target: {fileID: 1953887545}, m_TargetAssemblyTypeName: Player, Assembly-CSharp: }
 --- !u!4 &1568915825
 Transform:
   m_ObjectHideFlags: 0
@@ -6785,7 +6704,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953887536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.17, y: 0.48, z: 0}
+  m_LocalPosition: {x: -5.64, y: -2.45, z: 0}
   m_LocalScale: {x: 3.02, y: 3.02, z: 3.02}
   m_ConstrainProportionsScale: 1
   m_Children: []

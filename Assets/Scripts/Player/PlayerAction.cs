@@ -63,7 +63,7 @@ public partial class Player
         Vector2 spotLightPosition = lightShadow.position;
         // ライトの位置を変更
         spotLight.transform.position = playerPosition + -distanceToLight * lightDirection;
-
+        
         // ライトの向きを変更
         Vector3 spotLightScale = spotLight.transform.localScale;
         Vector3 shadowScale = spotLight.transform.Find("Shadow").localScale;
@@ -94,5 +94,4 @@ public partial class Player
             spotlight[lightNumber].SetActive(true);
         }
     }
-
 }

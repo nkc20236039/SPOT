@@ -73,6 +73,14 @@ public partial class Player : MonoBehaviour
             // マウスを動かした方へライトを向けれるようにする
             lightDirection = (int)Mathf.Sign(mouseDelta);
         }
+
+        // ライトの持ち替え
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            haveLight = !haveLight;
+        }
+
+
     }
 
     private void FixedUpdate()

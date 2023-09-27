@@ -1072,7 +1072,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c87b28199ef0994d910f960f2f5f83f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderTexture: {fileID: 0}
+  textureWidth: 1920
+  textureHeight: 1080
   spotLightScript: {fileID: 555097224}
 --- !u!1001 &331564505
 PrefabInstance:

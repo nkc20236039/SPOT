@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public partial class Player
 {
@@ -12,15 +11,22 @@ public partial class Player
 
     [Header("ライトに関わる変数")]
     [SerializeField] private float pickReach;       // 拾える範囲
-    [SerializeField] private Vector3 parentPos;     // 持っている時のプレイヤーからの距離
     [SerializeField] private GameObject[] spotlight;// シーンに存在するスポットライト
+    [SerializeField] private float defaultRadius;   // ライトの埋まり防止の普通の範囲
 
     private void Movement()
     {
         // プレイヤーに移動量を加算
         velocity.x = moveInput.x * m_speed * Time.deltaTime;
         // 斜面だった場合にベクトルを変更する
-        velocity = groundStateScript.Slope(velocity);
+        if (Vector2.Angle(Vector2.right, groundStateScript.Slope(velocity)) < 50)
+        {
+            velocity = groundStateScript.Slope(velocity);
+        }
+        else
+        {
+            isFall = true;
+        }
 
         if (moveInput.x != 0)
         {
@@ -43,7 +49,7 @@ public partial class Player
             isFall = false;
         }
 
-        if (groundStateScript.IsGround())
+        if (!groundStateScript.IsGround())
         {
             if (velocity.y < 0)
             {
@@ -54,6 +60,10 @@ public partial class Player
                 PlayAnimation(animationType.Jump);
             }
         }
+        else if (velocity.magnitude == 0)
+        {
+            PlayAnimation(animationType.Idle);
+        }
     }
 
     private void ChangeSpotLightDirection()
@@ -61,22 +71,50 @@ public partial class Player
         Transform lightShadow = spotLight.transform.Find("Shadow");
         Vector2 playerPosition = transform.position;
         Vector2 spotLightPosition = lightShadow.position;
+
+        // ライトがある場所にオブジェクトがないか
+
+        RaycastHit2D lightPositionHit =
+            Physics2D.CircleCast(
+                playerPosition,
+                defaultRadius,
+                distanceToLight * lightDirection,
+                -distanceToLight.magnitude,
+                stageLayer
+                );
+
+        Debug.DrawLine(playerPosition, lightPositionHit.point);
+
         // ライトの位置を変更
-        spotLight.transform.position = playerPosition + -distanceToLight * lightDirection;
-        
+        if (!lightPositionHit)
+        {
+            spotLight.transform.position =
+            Vector3.MoveTowards(
+                spotLight.transform.position,
+                playerPosition + -distanceToLight * lightDirection,
+                1
+                );
+        }
+        else
+        {
+            spotLight.transform.position =
+            Vector3.MoveTowards(
+                spotLight.transform.position,
+                lightPositionHit.point,
+                1
+                );
+        }
+
+
         // ライトの向きを変更
         Vector3 spotLightScale = spotLight.transform.localScale;
-        Vector3 shadowScale = spotLight.transform.Find("Shadow").localScale;
         // 実効値を求める
+        distanceToLight.y = Mathf.Abs(distanceToLight.y);
         spotLightScale.x = Mathf.Abs(spotLightScale.x);
-        spotLightScale.y = Mathf.Abs(spotLightScale.y);
-        spotLightScale.z = Mathf.Abs(spotLightScale.z);
-        shadowScale.z = Mathf.Abs(shadowScale.z);
         // 入力された方向に切り替える
-        spotLightScale *= lightDirection;
-        shadowScale.z *= lightDirection;
+        distanceToLight.y *= -lightDirection;
+        spotLightScale.x *= lightDirection;
         spotLight.transform.localScale = spotLightScale;
-        lightShadow.localScale = shadowScale;
     }
 
     private void ChangeSpotLight(int lightNumber)

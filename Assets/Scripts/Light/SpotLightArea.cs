@@ -8,6 +8,7 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private bool m_defaultLight = true;    // ライトか他の光の要素か
 
     [Header("ライトの設定")]
+    [SerializeField] private float gravityScale;
     [SerializeField] private float m_spotAngle;        // ライトの照らす広さ
     public float SpotAngle
     {
@@ -29,8 +30,6 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private Player playerScript;
     public Texture2D shadowTexture;
 
-
-
     private Vector2 oldPosition;        // 1フレーム前の位置
 
     private Vector2 lightPosition;
@@ -39,6 +38,8 @@ public class SpotLightArea : MonoBehaviour
     private RaycastHit2D hitBSide;
     private PolygonCollider2D lightPolygon;
     private DelaunayTriangulationTester meshGenerateScript;
+    private BoxCollider2D boxCollider;
+    [SerializeField] private GroundState groundStateScript;
 
     private void Start()
     {
@@ -47,11 +48,12 @@ public class SpotLightArea : MonoBehaviour
         // ライトの初期位置など取得
         LightSetting();
         meshGenerateScript = GetComponent<DelaunayTriangulationTester>();
-
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
-    void Update()
+    void LateUpdate()
     {
+
         // コライダーの広さを設定する
         GetComponent<EdgeCollider2D>().points =
             SetReachCollider();
@@ -109,7 +111,9 @@ public class SpotLightArea : MonoBehaviour
             }
         }
         // リストを降順にソートする
+
         arrivalPoints.Sort((a, b) => b.y.CompareTo(a.y));
+
 
         // ライトの最初と最後をとりあえず入れる
         completionPoint.Add(gameObject.transform.InverseTransformPoint(lightPosition));
@@ -222,10 +226,21 @@ public class SpotLightArea : MonoBehaviour
     /// </summary>
     private void LightSetting()
     {
+        if (!groundStateScript.IsGround() && !playerScript.haveLight)
+        {
+            Vector3 position = transform.position;
+            position.y -= gravityScale;
+           /* RaycastHit2D hit = Physics2D.Raycast(position, -Vector2.up, 100, m_defaultLayerMask);
+            Debug.DrawLine(position, hit.point);*/
+            transform.position = position;
+        }
+
         // ライトの位置
         lightPosition = transform.position;
 
         // 光の終点
+        m_spotAngle = Mathf.Abs(m_spotAngle);
+        m_spotAngle *= playerScript.lightDirection;
         Vector2 directionASide = Quaternion.Euler(0, 0, m_spotAngle / 2) * (transform.right * playerScript.lightDirection);
         Vector2 directionBSide = Quaternion.Euler(0, 0, -m_spotAngle / 2) * (transform.right * playerScript.lightDirection);
 

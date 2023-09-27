@@ -16,6 +16,7 @@ using Game.Utils.Triangulation;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 /// <summary>
 /// A test client for the triangulation algorithm. Intended to be used via Inspector.
 /// </summary>
@@ -48,6 +49,8 @@ public class DelaunayTriangulationTester : MonoBehaviour
     protected List<Triangle2D> m_outputTriangles = new List<Triangle2D>();
 
     protected DelaunayTriangulation m_triangulation = new DelaunayTriangulation();
+
+    [SerializeField] Player playerScript;
 
     public void RunTestPolygonColliders()
     {
@@ -199,7 +202,7 @@ public class DelaunayTriangulationTester : MonoBehaviour
         {
             UVs[i] = new Vector2
             (
-                (vertices[i].x + cameraToLightVector.x / 4) / cameraWidth,
+                playerScript.lightDirection * (vertices[i].x + cameraToLightVector.x / 4) / cameraWidth,
                 (vertices[i].y + cameraToLightVector.y / 4) / cameraHeight
             );
         }

@@ -84,7 +84,7 @@ public class ObjectEdge : MonoBehaviour
         // Debug.Log($"{lightPoint}\n{pointA}\n{pointB}");
 
         Vector2 edgePoint = transform.position;
-        Vector2 direction = (edgePoint - lightPoint).normalized;
+        Vector2 direction = (edgePoint - lightPoint).normalized * 0.0001f;
         Vector2 distance = edgePoint - lightPoint;
 
         // 各辺のベクトルを計算
@@ -120,10 +120,11 @@ public class ObjectEdge : MonoBehaviour
             );
         if (debug)
         {
+            Debug.DrawRay(lightPoint + direction, direction * 1000, Color.red);
             Debug.DrawLine(lightPoint, objectHit.point);
         }
 
-        // 当たった地点が許容範囲内ならTrueを返す
+        // 当たったオブジェクトが同じオブジェクトだったらtrue
         return objectHit.transform.gameObject == gameObject;
     }
 

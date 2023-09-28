@@ -202,8 +202,8 @@ public class DelaunayTriangulationTester : MonoBehaviour
         {
             UVs[i] = new Vector2
             (
-                playerScript.lightDirection * (vertices[i].x + cameraToLightVector.x / 4) / cameraWidth,
-                (vertices[i].y + cameraToLightVector.y / 4) / cameraHeight
+                (playerScript.lightDirection * vertices[i].x * 2 + cameraToLightVector.x / 2) / cameraWidth,
+                (vertices[i].y * 2 + cameraToLightVector.y / 2) / cameraHeight
             );
         }
 

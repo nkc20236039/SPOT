@@ -13,7 +13,6 @@ public partial class Player
         Idle,
         Run,
         Jump,
-        JumpTurn,
         Fall,
     }
 

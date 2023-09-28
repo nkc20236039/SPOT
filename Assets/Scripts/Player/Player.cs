@@ -21,6 +21,7 @@ public partial class Player : MonoBehaviour
     private Coroutine jumpCoroutine;
     private SpriteRenderer spotLightSpriteRenderer; // ライトの設置/持っているときのスプライト
     private bool chengedDirection = false;
+    private Vector2 playerPosition;
 
     [SerializeField] private Sprite[] spotLightSprite;
     [SerializeField] private float detectionRange;
@@ -38,6 +39,7 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
+        playerPosition = transform.position;
         // 左右入力取得
         moveInput.x = Input.GetAxisRaw("Horizontal");
 
@@ -63,14 +65,20 @@ public partial class Player : MonoBehaviour
         if (haveLight)
         {
             ChangeSpotLightDirection();
-            mouseDelta = Input.GetAxis("Mouse X");
+            if (!Isburied(-lightDirection))
+            {
+                mouseDelta = Input.GetAxis("Mouse X");
+
+            }
         }
 
         // スポットライトの方向を調整
         if (Mathf.Abs(mouseDelta) >= detectionRange && Input.GetMouseButton(1) && !chengedDirection)
         {
+
             // マウスを動かした方へライトを向けれるようにする
             lightDirection = (int)Mathf.Sign(mouseDelta);
+
             chengedDirection = true;
         }
 

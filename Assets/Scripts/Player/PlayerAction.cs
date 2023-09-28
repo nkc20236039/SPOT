@@ -69,24 +69,14 @@ public partial class Player
     private void ChangeSpotLightDirection()
     {
         Transform lightShadow = spotLight.transform.Find("Shadow");
-        Vector2 playerPosition = transform.position;
+
         Vector2 spotLightPosition = lightShadow.position;
 
         // ライトがある場所にオブジェクトがないか
 
-        RaycastHit2D lightPositionHit =
-            Physics2D.CircleCast(
-                playerPosition,
-                defaultRadius,
-                distanceToLight * lightDirection,
-                -distanceToLight.magnitude,
-                stageLayer
-                );
-
-        Debug.DrawLine(playerPosition, lightPositionHit.point);
 
         // ライトの位置を変更
-        if (!lightPositionHit)
+        if (!Isburied(lightDirection))
         {
             spotLight.transform.position =
             Vector3.MoveTowards(
@@ -95,16 +85,6 @@ public partial class Player
                 1
                 );
         }
-        else
-        {
-            spotLight.transform.position =
-            Vector3.MoveTowards(
-                spotLight.transform.position,
-                lightPositionHit.point,
-                1
-                );
-        }
-
 
         // ライトの向きを変更
         Vector3 spotLightScale = spotLight.transform.localScale;
@@ -116,6 +96,19 @@ public partial class Player
         spotLightScale.x *= lightDirection;
         spotLight.transform.localScale = spotLightScale;
     }
+
+    private bool Isburied(int direction)
+    {
+        return Physics2D.CircleCast(
+                playerPosition,
+                defaultRadius,
+                distanceToLight * direction,
+                -distanceToLight.magnitude,
+                stageLayer
+                );
+    }
+
+
 
     private void ChangeSpotLight(int lightNumber)
     {

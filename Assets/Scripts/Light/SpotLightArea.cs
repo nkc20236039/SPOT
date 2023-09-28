@@ -53,6 +53,7 @@ public class SpotLightArea : MonoBehaviour
 
     void LateUpdate()
     {
+        
 
         // コライダーの広さを設定する
         GetComponent<EdgeCollider2D>().points =
@@ -226,12 +227,10 @@ public class SpotLightArea : MonoBehaviour
     /// </summary>
     private void LightSetting()
     {
-        if (!groundStateScript.IsGround() && !playerScript.haveLight)
+        if (!groundStateScript.IsGround() && !playerScript.haveLight && m_defaultLight)
         {
             Vector3 position = transform.position;
             position.y -= gravityScale;
-           /* RaycastHit2D hit = Physics2D.Raycast(position, -Vector2.up, 100, m_defaultLayerMask);
-            Debug.DrawLine(position, hit.point);*/
             transform.position = position;
         }
 

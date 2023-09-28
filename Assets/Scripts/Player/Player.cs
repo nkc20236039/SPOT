@@ -123,4 +123,9 @@ public partial class Player : MonoBehaviour
         // 最終的な移動量を適用
         rigidbody2d.velocity = velocity;
     }
+
+    private void cursorIcon()
+    {
+
+    }
 }

@@ -7,6 +7,7 @@ public class GroundState : MonoBehaviour
     [SerializeField] private bool debug = false;        // Rayなどの表示
     [SerializeField] private LayerMask layerMask;       // レイヤーマスク
     [SerializeField] private Vector3 rayRelativePos;    // 最初のプレイヤーからの相対ポジション
+    [SerializeField] private float rayRange;            // Rayの長さ
     private Vector3 rayOrigin;
     private Vector3 groundNormal;
 
@@ -23,10 +24,10 @@ public class GroundState : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             RaycastHit2D hit;
-            hit = Physics2D.Raycast(rayOrigin, Vector3.down, 0.05f, layerMask);
+            hit = Physics2D.Raycast(rayOrigin, Vector3.down, rayRange, layerMask);
 
             // デバッグ
-            if (debug) { Debug.DrawRay(rayOrigin, Vector3.down * 0.05f, Color.yellow); }
+            if (debug) { Debug.DrawRay(rayOrigin, Vector3.down * rayRange, Color.yellow); }
 
             // 次の検索位置へ
             rayOrigin.x += -rayRelativePos.x;

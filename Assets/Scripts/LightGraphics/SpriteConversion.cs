@@ -47,10 +47,12 @@ public class SpriteConversion : MonoBehaviour
         Texture2D texture2D = new Texture2D(
             texture.width,
             texture.height,
-            TextureFormat.ARGB32,
+            TextureFormat.RGBA32,
             false,
             false
             );
+
+
         //ƒJƒƒ‰‚ğƒŒƒ“ƒ_ƒŠƒ“ƒO
         //shadowCamera.targetTexture = texture;
         //shadowCamera.Render();

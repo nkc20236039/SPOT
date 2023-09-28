@@ -22,12 +22,14 @@ public partial class Player : MonoBehaviour
     private SpriteRenderer spotLightSpriteRenderer; // ライトの設置/持っているときのスプライト
     private bool chengedDirection = false;
     private Vector2 playerPosition;
+    private bool isRightClick;
 
     [SerializeField] private Sprite[] spotLightSprite;
     [SerializeField] private float detectionRange;
     [SerializeField] private Vector2 distanceToLight;
     [SerializeField] private GameObject spotLight;
     [SerializeField] private LayerMask stageLayer;
+    [SerializeField] private MousePointer mousePointerScript;
 
     void Start()
     {
@@ -40,6 +42,17 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
+        // カーソルの表示/非表示
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.visible = true;
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Cursor.visible = false;
+        }
+
+
         playerPosition = transform.position;
         // 左右入力取得
         moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -87,6 +100,9 @@ public partial class Player : MonoBehaviour
             chengedDirection = true;
         }
 
+        // カーソルの表示を変更
+        isRightClick = Input.GetMouseButton(1);
+
         if (Input.GetMouseButtonUp(1))
         {
             // ボタンを離したら再度使えるようにする
@@ -110,6 +126,9 @@ public partial class Player : MonoBehaviour
                 PlaySound(SoundID.LightPlace);
             }
         }
+
+        // カーソルのアニメーションを設定する
+        mousePointerScript.SetCursorIcon(isRightClick, lightDirection, !Isburied(-lightDirection));
     }
 
     private void FixedUpdate()

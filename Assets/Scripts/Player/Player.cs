@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.AI;
 
 public partial class Player : MonoBehaviour
 {
@@ -35,6 +35,7 @@ public partial class Player : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spotLightSpriteRenderer = spotLight.GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -49,6 +50,7 @@ public partial class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 isJump = true;
+                PlaySound(SoundID.Jump);
             }
 
             if (moveInput.x != 0)
@@ -75,10 +77,13 @@ public partial class Player : MonoBehaviour
         // スポットライトの方向を調整
         if (Mathf.Abs(mouseDelta) >= detectionRange && Input.GetMouseButton(1) && !chengedDirection)
         {
-
             // マウスを動かした方へライトを向けれるようにする
+            int oldLightDirection = lightDirection;
             lightDirection = (int)Mathf.Sign(mouseDelta);
-
+            if (oldLightDirection != lightDirection)
+            {
+                PlaySound(SoundID.LightSlide);
+            }
             chengedDirection = true;
         }
 
@@ -97,10 +102,12 @@ public partial class Player : MonoBehaviour
             if (haveLight)
             {
                 spotLightSpriteRenderer.sprite = spotLightSprite[1];
+                PlaySound(SoundID.LightPick);
             }
             else
             {
                 spotLightSpriteRenderer.sprite = spotLightSprite[0];
+                PlaySound(SoundID.LightPlace);
             }
         }
     }

@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Reload : MonoBehaviour
+public class SystemButton : MonoBehaviour
 {
 
 

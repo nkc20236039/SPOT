@@ -120,7 +120,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Pixel Adventure 2/Scenes/Demo.unity
     guid: 08d5689e6281c2b41a5f8b7d4b79db0b
-  - enabled: 1
-    path: Assets/Scenes/Title.unity
-    guid: 200d3e8e9c4a3c24bae58f731bb36399
   m_configObjects: {}

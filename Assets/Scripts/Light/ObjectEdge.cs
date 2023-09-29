@@ -2,14 +2,7 @@ using UnityEngine;
 
 public class ObjectEdge : MonoBehaviour
 {
-    [SerializeField]
-    private LayerMask indexLayerMask;    // 画面フレームのレイヤーマスク
-    [SerializeField]
-    private LayerMask objectLayerMask;          // オブジェクトのレイヤーマスク
-    [SerializeField]
-    private GameObject enableLight;             // 有効のライト
-    [SerializeField] bool debug = true;
-    [SerializeField] float radiusAllow;
+    [SerializeField] ShadowEdgeAsset shadowEdgeDate;
 
     // 影の情報
     // 0: 影ができる角の位置
@@ -33,7 +26,7 @@ public class ObjectEdge : MonoBehaviour
                 shadowSideInfo[0] - lightDirection,
                 -lightDirection,
                 Mathf.Infinity,
-                indexLayerMask
+                shadowEdgeDate.indexLayerMask
                 );
 
         shadowSideInfo[1] = displayFreamHit.point;
@@ -44,7 +37,7 @@ public class ObjectEdge : MonoBehaviour
                 shadowSideInfo[0] - lightDirection,
                 -lightDirection,
                 Mathf.Infinity,
-                objectLayerMask
+                shadowEdgeDate.objectLayerMask
                 );
         shadowSideInfo[2] = objectHit.point;
         GameObject shadowHitObject;
@@ -66,7 +59,7 @@ public class ObjectEdge : MonoBehaviour
             shadowSideInfo[2] = shadowSideInfo[0];
         }
 
-        if (debug)
+        if (shadowEdgeDate.debug)
         {
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[1], Color.cyan);
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[2], Color.green);
@@ -110,24 +103,43 @@ public class ObjectEdge : MonoBehaviour
             return false;
         }
         // ライトからRayを出す
-        RaycastHit2D objectHit =
-            Physics2D.Raycast
+        RaycastHit2D[] objectHitAll =
+            Physics2D.RaycastAll
             (
                 lightPoint + direction,
                 direction,
                 distance.magnitude * 2,
-                objectLayerMask
+                shadowEdgeDate.objectLayerMask
             );
-        if (debug)
+
+        
+        foreach (RaycastHit2D objectHit in objectHitAll)
         {
-            Debug.DrawRay(lightPoint + direction, direction * 1000, Color.red);
-            Debug.DrawLine(lightPoint, objectHit.point);
+            if (shadowEdgeDate.debug)
+            {
+                Debug.Log(objectHit.normal);
+                Debug.DrawLine(lightPoint, objectHit.point, Color.red);
+            }
+
+            if(objectHit.transform.gameObject == this.gameObject)
+            {
+                break;
+            }
+
+            // ヒットしたオブジェクトの中に
+            // ObjectEdge以外が存在する
+            // falseを返す
+            if(objectHit.transform.gameObject.tag != gameObject.tag)
+            {
+                return false;
+            }
         }
 
         // 当たったオブジェクトが同じオブジェクトだったらtrue
-        return objectHit.transform.gameObject == gameObject;
+        return true;
     }
 
+#if !UNITY_STANDALONE_WIN
     // ギズモの表示
     private void OnDrawGizmos()
     {
@@ -135,6 +147,7 @@ public class ObjectEdge : MonoBehaviour
 
         Gizmos.color = Color.red;
         // Rayが当たっても許可する円を表示する
-        Gizmos.DrawWireSphere(Vector2.zero, radiusAllow);
+        Gizmos.DrawWireSphere(Vector2.zero, shadowEdgeDate.radiusAllow);
     }
+#endif
 }

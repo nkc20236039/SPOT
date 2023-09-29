@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -635,6 +635,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -1139,6 +1143,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -1265,6 +1273,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -1344,6 +1356,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -1759,6 +1775,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -2015,6 +2035,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -2389,6 +2413,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -3283,6 +3311,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -3429,6 +3461,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -3548,6 +3584,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -3761,6 +3801,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -6086,6 +6130,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -6245,6 +6293,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -6476,6 +6528,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -6590,6 +6646,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -6908,6 +6968,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -7374,6 +7438,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -8048,6 +8116,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 555097221}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
       objectReference: {fileID: 0}
@@ -8238,6 +8310,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504
@@ -9808,6 +9884,10 @@ PrefabInstance:
       propertyPath: enableLight
       value: 
       objectReference: {fileID: 555097221}
+    - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
+      propertyPath: shadowEdgeDate
+      value: 
+      objectReference: {fileID: 11400000, guid: ec9c6506a0363ee449271cfea11259c6, type: 2}
     - target: {fileID: 4238189952934988632, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: objectLayerMask.m_Bits
       value: 21504

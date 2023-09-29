@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,8 +31,8 @@ public class MousePointer : MonoBehaviour
         int playAnimationIndex = 0; // 再生するアニメーション
 
         // スケール値取得
-        Vector3 cursorScale = cursorIconRect.localScale;
-        cursorScale.x = Mathf.Abs(cursorScale.x);
+        Vector3 cursorRotate = cursorIconRect.eulerAngles;
+        cursorRotate.z = 90;
 
         // 右クリックされているとき
         if (isRightClick)
@@ -39,7 +40,8 @@ public class MousePointer : MonoBehaviour
             if(canSlide)
             {
                 playAnimationIndex = 1;
-                cursorScale.x *= direction;
+                cursorRotate.z *= direction;
+                Debug.Log(direction);
             }
             else
             {
@@ -52,7 +54,7 @@ public class MousePointer : MonoBehaviour
         }
 
         // スケール適用
-        cursorIconRect.localScale = cursorScale;
+        cursorIconRect.eulerAngles = cursorRotate;
 
         animator.SetInteger("CursorIcon", playAnimationIndex);
     }

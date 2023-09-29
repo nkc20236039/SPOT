@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class SystemButton : MonoBehaviour
 {
 
 
-    public void ClickEvent()
+    public void Reload()
     {
-
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void MouseEnter()

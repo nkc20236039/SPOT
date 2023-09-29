@@ -17,7 +17,6 @@ public partial class Player
 
     private void PlaySound(SoundID soundName)
     {
-        Debug.Log(audioFile.Length);
         audioSource.clip = audioFile[(int)soundName];
         audioSource.Play();
     }

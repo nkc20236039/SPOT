@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public partial class Player : MonoBehaviour
 {
@@ -42,6 +43,25 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SceneManager.LoadScene("Pre1");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SceneManager.LoadScene("Pre2");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SceneManager.LoadScene("Pre3");
+        }
+
+
+
+
+
+
+        /*=============================================*/
         // カーソルの表示/非表示
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -128,6 +148,7 @@ public partial class Player : MonoBehaviour
         }
 
         // カーソルのアニメーションを設定する
+        if (chengedDirection) { isRightClick = false; }
         mousePointerScript.SetCursorIcon(isRightClick, lightDirection, !Isburied(-lightDirection));
     }
 

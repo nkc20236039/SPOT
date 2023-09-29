@@ -53,7 +53,7 @@ public class SpotLightArea : MonoBehaviour
 
     void LateUpdate()
     {
-        
+
 
         // コライダーの広さを設定する
         GetComponent<EdgeCollider2D>().points =
@@ -305,7 +305,7 @@ public class SpotLightArea : MonoBehaviour
         return points;
     }
 
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         if (Application.isPlaying)
         {
@@ -315,5 +315,5 @@ public class SpotLightArea : MonoBehaviour
             }
         }
 
-    }
+    }*/
 }

@@ -7,6 +7,7 @@ public partial class Player : MonoBehaviour
     public int lightDirection { get; private set; } = 1;
     public Vector2 lightCallPosition;
     public bool haveLight = true;                 // ライトの所持状態
+    public bool canPlayerControl = true;
 
     private Vector2 moveInput;                // 移動方向取得
 
@@ -31,9 +32,12 @@ public partial class Player : MonoBehaviour
     [SerializeField] private GameObject spotLight;
     [SerializeField] private LayerMask stageLayer;
     [SerializeField] private MousePointer mousePointerScript;
+    [SerializeField] private float deathHeight;
 
     void Start()
     {
+        Time.timeScale = 1f;
+        canPlayerControl = true;
         groundStateScript = GetComponent<GroundState>();
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -43,25 +47,20 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        playerPosition = transform.position;
+        // 落下した時
+        if (playerPosition.y < deathHeight)
         {
-            SceneManager.LoadScene("Pre1");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SceneManager.LoadScene("Pre2");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SceneManager.LoadScene("Pre3");
+
         }
 
 
+        // 操作を受け付けないようにする
+        if (!canPlayerControl)
+        {
+            return;
+        }
 
-
-
-
-        /*=============================================*/
         // カーソルの表示/非表示
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -73,7 +72,6 @@ public partial class Player : MonoBehaviour
         }
 
 
-        playerPosition = transform.position;
         // 左右入力取得
         moveInput.x = Input.GetAxisRaw("Horizontal");
 
@@ -154,6 +152,12 @@ public partial class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // 操作できないときは実行しない
+        if (!canPlayerControl)
+        {
+            PlayerInit();
+        }
+
         // 現在のvelocityを取得
         velocity = rigidbody2d.velocity;
 
@@ -164,8 +168,8 @@ public partial class Player : MonoBehaviour
         rigidbody2d.velocity = velocity;
     }
 
-    private void cursorIcon()
+    private void PlayerInit()
     {
-
+        moveInput = Vector2.zero;
     }
 }

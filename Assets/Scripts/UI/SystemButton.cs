@@ -1,4 +1,5 @@
 using DG.Tweening;
+using EasyTransition;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
@@ -8,11 +9,25 @@ using UnityEngine.UIElements;
 
 public class SystemButton : MonoBehaviour
 {
+    [SerializeField] TransitionSettings reloadTransition;
+    private Player playerScript;
+    private AudioSource reloadAudio;
 
-
-    public void Reload()
+    private void Start()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+        reloadAudio = GetComponent<AudioSource>();
+    }
+
+    public void Reload(float transitionTime)
+    {
+        // 現在のシーンを取得
+        string sceneName = SceneManager.GetActiveScene().name;
+        // シーンリロード
+        TransitionManager.Instance().Transition(sceneName, reloadTransition, transitionTime);
+        // 操作をできないようにする
+        playerScript.canPlayerControl = false;
+        reloadAudio.Play();
     }
 
     public void MouseEnter()

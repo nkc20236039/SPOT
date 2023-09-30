@@ -1,5 +1,6 @@
 using DG.Tweening;
 using EasyTransition;
+using KanKikuchi.AudioManager;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
@@ -11,12 +12,10 @@ public class SystemButton : MonoBehaviour
 {
     [SerializeField] TransitionSettings reloadTransition;
     private Player playerScript;
-    private AudioSource reloadAudio;
 
     private void Start()
     {
         playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
-        reloadAudio = GetComponent<AudioSource>();
     }
 
     public void Reload(float transitionTime)
@@ -27,12 +26,13 @@ public class SystemButton : MonoBehaviour
         TransitionManager.Instance().Transition(sceneName, reloadTransition, transitionTime);
         // 操作をできないようにする
         playerScript.canPlayerControl = false;
-        reloadAudio.Play();
+        SEManager.Instance.Play(SEPath.RELOAD, 1, 0, 0.8f);
     }
 
     public void MouseEnter()
     {
         // マウスがフォーカスされたとき拡大する
+        SEManager.Instance.Play(SEPath.MOUSE_OVER, 0.5f);
         transform.DOScale(1.25f, 0.5f);
     }
 

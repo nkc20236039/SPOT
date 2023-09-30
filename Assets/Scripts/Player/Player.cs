@@ -1,5 +1,7 @@
+using KanKikuchi.AudioManager;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 public partial class Player : MonoBehaviour
@@ -43,6 +45,8 @@ public partial class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         spotLightSpriteRenderer = spotLight.GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
+
+        SEManager.Instance.ChangeBaseVolume(0.5f);
     }
 
     void Update()
@@ -81,7 +85,7 @@ public partial class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 isJump = true;
-                PlaySound(SoundID.Jump);
+                SEManager.Instance.Play(SEPath.JUMP, 1, 0, Random.Range(0.6f, 1.1f));
             }
 
             if (moveInput.x != 0)
@@ -113,7 +117,7 @@ public partial class Player : MonoBehaviour
             lightDirection = (int)Mathf.Sign(mouseDelta);
             if (oldLightDirection != lightDirection)
             {
-                PlaySound(SoundID.LightSlide);
+                SEManager.Instance.Play(SEPath.LIGHT_SLIDE);
             }
             chengedDirection = true;
         }
@@ -136,12 +140,12 @@ public partial class Player : MonoBehaviour
             if (haveLight)
             {
                 spotLightSpriteRenderer.sprite = spotLightSprite[1];
-                PlaySound(SoundID.LightPick);
+                SEManager.Instance.Play(SEPath.LIGHT_PICK);
             }
             else
             {
                 spotLightSpriteRenderer.sprite = spotLightSprite[0];
-                PlaySound(SoundID.LightPlace);
+                SEManager.Instance.Play(SEPath.LIGHT_PLACE);
             }
         }
 

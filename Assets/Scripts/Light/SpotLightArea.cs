@@ -113,8 +113,19 @@ public class SpotLightArea : MonoBehaviour
         }
         // リストを降順にソートする
 
-        arrivalPoints.Sort((a, b) => b.y.CompareTo(a.y));
-
+        arrivalPoints.Sort((point1, point2) =>
+        {
+            // Y座標がほぼ同じ場合にX軸で昇順にソート
+            if (Mathf.Approximately(point1.y, point2.y))
+            {
+                return point1.x.CompareTo(point2.x);
+            }
+            // Y座標が異なる場合にY座標で降順にソート
+            else
+            {
+                return point2.y.CompareTo(point1.y);
+            }
+        });
 
         // ライトの最初と最後をとりあえず入れる
         completionPoint.Add(gameObject.transform.InverseTransformPoint(lightPosition));

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ObjectEdge : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class ObjectEdge : MonoBehaviour
                 );
 
         shadowSideInfo[1] = displayFreamHit.point;
+        shadowSideInfo[1].x += displayFreamHit.distance;
 
         // 実際の影がついた位置を求める
         RaycastHit2D objectHit =
@@ -102,6 +104,7 @@ public class ObjectEdge : MonoBehaviour
             // すべての外積が同じ符号でなければ強制で当たっていないことにする
             return false;
         }
+
         // ライトからRayを出す
         RaycastHit2D[] objectHitAll =
             Physics2D.RaycastAll
@@ -112,42 +115,87 @@ public class ObjectEdge : MonoBehaviour
                 shadowEdgeDate.objectLayerMask
             );
 
-        
+
+
         foreach (RaycastHit2D objectHit in objectHitAll)
         {
             if (shadowEdgeDate.debug)
             {
-                Debug.Log(objectHit.normal);
                 Debug.DrawLine(lightPoint, objectHit.point, Color.red);
             }
 
-            if(objectHit.transform.gameObject == this.gameObject)
+            // 自身に当たった時点で終了する
+            if (objectHit.transform.gameObject == this.gameObject)
             {
-                break;
+                return true;
             }
+
+
+            // ライトと平行な場合の特別処理
+            Vector2 pointNormal = distance.normalized;
+            if (Mathf.Approximately(0, pointNormal.x))
+            {
+                float gaps = 0.1f;
+                for (int i = 0; i < 2; i++)
+                {
+                    Vector2 start = objectHit.point;
+                    Vector2 end = edgePoint;
+                    Vector2 hitNormal = (start - end).normalized;
+                    start.x += gaps;
+                    start.y -= hitNormal.y * 0.01f;
+                    end.x += gaps;
+                    end.y += hitNormal.y * 0.01f;
+
+                    RaycastHit2D lineHit = Physics2D.Linecast(start, end, shadowEdgeDate.objectLayerMask);
+
+                    if (!lineHit)
+                    {
+                        return true;
+                    }
+
+                    gaps *= -1;
+                }
+            }
+            else if (Mathf.Approximately(0, pointNormal.y))
+            {
+                float gaps = 0.1f;
+                for (int i = 0; i < 2; i++)
+                {
+                    Vector2 start = objectHit.point;
+                    Vector2 end = edgePoint;
+                    Vector2 hitNormal = (start - end).normalized;
+                    start.y += gaps;
+                    start.x -= hitNormal.x * 0.01f;
+                    end.y += gaps;
+                    end.x += hitNormal.x * 0.01f;
+
+                    RaycastHit2D lineHit = Physics2D.Linecast(start, end, shadowEdgeDate.objectLayerMask);
+
+                    if (!lineHit)
+                    {
+                        return true;
+                    }
+
+                    gaps *= -1;
+                }
+            }
+
+
+            // 
 
             // ヒットしたオブジェクトの中に
             // ObjectEdge以外が存在する
             // falseを返す
-            if(objectHit.transform.gameObject.tag != gameObject.tag)
+            if (objectHit.transform.gameObject.tag != gameObject.tag)
             {
                 return false;
             }
+
         }
+
 
         // 当たったオブジェクトが同じオブジェクトだったらtrue
         return true;
     }
 
-#if !UNITY_STANDALONE_WIN
-    // ギズモの表示
-    private void OnDrawGizmos()
-    {
-        Gizmos.matrix = transform.localToWorldMatrix;
-
-        Gizmos.color = Color.red;
-        // Rayが当たっても許可する円を表示する
-        Gizmos.DrawWireSphere(Vector2.zero, shadowEdgeDate.radiusAllow);
-    }
-#endif
 }

@@ -5,9 +5,13 @@
 /// </summary>
 public static class SEPath{
 
-	public const string JINGLE10 = "SE/Jingle/jingle10";
-	public const string SYSTEM20 = "SE/system20";
-	public const string SYSTEM23 = "SE/system23";
+	public const string FINGERSNAP43482 = "SE/UI/finger-snap-43482";
+	public const string JUMP            = "SE/Player/Jump";
+	public const string LIGHT_PICK      = "SE/Player/LightPick";
+	public const string LIGHT_PLACE     = "SE/Player/LightPlace";
+	public const string LIGHT_SLIDE     = "SE/Player/lightSlide";
+	public const string MOUSE_OVER      = "SE/UI/MouseOver";
+	public const string RELOAD          = "SE/UI/Reload";
 
 }
 

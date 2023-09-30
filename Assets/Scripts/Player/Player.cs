@@ -1,8 +1,5 @@
 using KanKikuchi.AudioManager;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
 
 public partial class Player : MonoBehaviour
 {
@@ -27,6 +24,7 @@ public partial class Player : MonoBehaviour
     private bool chengedDirection = false;
     private Vector2 playerPosition;
     private bool isRightClick;
+    private bool isDied;
 
     [SerializeField] private Sprite[] spotLightSprite;
     [SerializeField] private float detectionRange;
@@ -35,11 +33,15 @@ public partial class Player : MonoBehaviour
     [SerializeField] private LayerMask stageLayer;
     [SerializeField] private MousePointer mousePointerScript;
     [SerializeField] private float deathHeight;
+    [SerializeField] private CameraShake cameraShakeScript;
+    [SerializeField] private SystemButton systemButtonScript;
 
     void Start()
     {
         Time.timeScale = 1f;
         canPlayerControl = true;
+        isDied = false;
+
         groundStateScript = GetComponent<GroundState>();
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -53,9 +55,12 @@ public partial class Player : MonoBehaviour
     {
         playerPosition = transform.position;
         // —Ž‰º‚µ‚½Žž
-        if (playerPosition.y < deathHeight)
+        if (playerPosition.y < deathHeight && !isDied)
         {
-
+            cameraShakeScript.Shake(0.25f, 0.1f);
+            SEManager.Instance.Play(SEPath.DEATH);
+            systemButtonScript.Reload(1f);
+            isDied = true;
         }
 
 
@@ -85,7 +90,7 @@ public partial class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 isJump = true;
-                SEManager.Instance.Play(SEPath.JUMP, 1, 0, Random.Range(0.6f, 1.1f));
+                SEManager.Instance.Play(SEPath.JUMP, pitch: Random.Range(0.8f, 1.1f));
             }
 
             if (moveInput.x != 0)
@@ -140,7 +145,7 @@ public partial class Player : MonoBehaviour
             if (haveLight)
             {
                 spotLightSpriteRenderer.sprite = spotLightSprite[1];
-                SEManager.Instance.Play(SEPath.LIGHT_PICK);
+                SEManager.Instance.Play(SEPath.LIGHT_PICK, pitch: 1.25f);
             }
             else
             {

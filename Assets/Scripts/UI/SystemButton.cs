@@ -1,17 +1,20 @@
 using DG.Tweening;
 using EasyTransition;
 using KanKikuchi.AudioManager;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class SystemButton : MonoBehaviour
 {
+    [Header("リロードボタン")]
     [SerializeField] TransitionSettings reloadTransition;
+    [Space]
+    [Header("メニューボタン")]
+    [SerializeField] Image[] displayImage;
+
     private Player playerScript;
+    private bool isMenuOpen;
 
     private void Start()
     {
@@ -26,7 +29,15 @@ public class SystemButton : MonoBehaviour
         TransitionManager.Instance().Transition(sceneName, reloadTransition, transitionTime);
         // 操作をできないようにする
         playerScript.canPlayerControl = false;
-        SEManager.Instance.Play(SEPath.RELOAD, 1, 0, 0.8f);
+        SEManager.Instance.Play(SEPath.RELOAD, delay: transitionTime, pitch: 0.8f);
+    }
+
+    public void Menu()
+    {
+        if (isMenuOpen)
+        {
+
+        }
     }
 
     public void MouseEnter()

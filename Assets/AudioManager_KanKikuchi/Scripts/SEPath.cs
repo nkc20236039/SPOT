@@ -5,7 +5,10 @@
 /// </summary>
 public static class SEPath{
 
+	public const string BUTTON_CLICK    = "SE/UI/ButtonClick";
+	public const string DEATH           = "SE/Player/Death";
 	public const string FINGERSNAP43482 = "SE/UI/finger-snap-43482";
+	public const string GAME_CLEAR      = "SE/Player/GameClear";
 	public const string JUMP            = "SE/Player/Jump";
 	public const string LIGHT_PICK      = "SE/Player/LightPick";
 	public const string LIGHT_PLACE     = "SE/Player/LightPlace";

@@ -41,7 +41,6 @@ public class MousePointer : MonoBehaviour
             {
                 playAnimationIndex = 1;
                 cursorRotate.z *= direction;
-                Debug.Log(direction);
             }
             else
             {

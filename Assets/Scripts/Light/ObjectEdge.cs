@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class ObjectEdge : MonoBehaviour
 {
@@ -63,7 +62,8 @@ public class ObjectEdge : MonoBehaviour
 
         if (shadowEdgeDate.debug)
         {
-            Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[1], Color.cyan);
+            Vector2 debugFreamHit = new Vector2(shadowSideInfo[1].x - displayFreamHit.distance, shadowSideInfo[1].y);
+            Debug.DrawLine(shadowSideInfo[0] - lightDirection, debugFreamHit, Color.cyan);
             Debug.DrawLine(shadowSideInfo[0] - lightDirection, shadowSideInfo[2], Color.green);
         }
 

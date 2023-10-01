@@ -1,19 +1,16 @@
 using EasyTransition;
 using KanKikuchi.AudioManager;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static System.TimeZoneInfo;
 
 public class TouchClearFlag : MonoBehaviour
 {
-    [SerializeField] private AnimatedImage animatedImageScript; 
+    [SerializeField] private GameObject animatedImage;
     [SerializeField] private TransitionSettings transition;
     [SerializeField] private float transitionDelay;
 
     private Player playerScript;
+    public static int Stage = 1;
 
     private void Start()
     {
@@ -26,13 +23,14 @@ public class TouchClearFlag : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             // アニメーション表示キャンバスのImageを有効化
-            animatedImageScript.playGif = true;
+            animatedImage.SetActive(true);
             playerScript.canPlayerControl = false;
             // 音再生
             SEManager.Instance.Play(SEPath.CREAR_AUDIO);
 
             // 現在のシーンを取得
-            string sceneName = SceneManager.GetActiveScene().name;
+            Stage++;
+            string sceneName = "Stage" + Stage.ToString();
             // トランジション
             TransitionManager.Instance().Transition(sceneName, transition, transitionDelay);
         }

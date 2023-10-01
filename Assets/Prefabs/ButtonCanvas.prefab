@@ -582,7 +582,7 @@ GameObject:
   - component: {fileID: 3710855215632049346}
   - component: {fileID: 2773943469789223530}
   - component: {fileID: 8703392601047360633}
-  - component: {fileID: 2409740684859350947}
+  - component: {fileID: 2614121913151595280}
   - component: {fileID: 8501633782011635741}
   m_Layer: 5
   m_Name: Reload
@@ -705,7 +705,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2409740684859350947
+--- !u!114 &2614121913151595280
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -723,7 +723,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 8501633782011635741}
-          m_TargetAssemblyTypeName: Reload, Assembly-CSharp
+          m_TargetAssemblyTypeName: SystemButton, Assembly-CSharp
           m_MethodName: MouseEnter
           m_Mode: 1
           m_Arguments:
@@ -739,7 +739,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 8501633782011635741}
-          m_TargetAssemblyTypeName: Reload, Assembly-CSharp
+          m_TargetAssemblyTypeName: SystemButton, Assembly-CSharp
           m_MethodName: MouseExit
           m_Mode: 1
           m_Arguments:

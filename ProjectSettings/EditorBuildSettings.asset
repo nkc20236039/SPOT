@@ -6,18 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/GameScene.unity
-    guid: 515611870c23f654d8a753814a1e2c29
-  - enabled: 1
-    path: Assets/EasyTransitions/Demo/TransitionDemo.unity
-    guid: 571da65939e9e684088d97ec020ffb69
-  - enabled: 1
-    path: Assets/Pixel Adventure 1/Scenes/Demo.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Pixel Adventure 2/Scenes/Demo.unity
-    guid: 08d5689e6281c2b41a5f8b7d4b79db0b
-  - enabled: 1
     path: Assets/Scenes/Stage/Stage1.unity
     guid: 801a2f1c6fb7e21479b54fbb975a9591
   - enabled: 1

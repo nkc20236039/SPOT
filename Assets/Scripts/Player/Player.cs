@@ -93,21 +93,17 @@ public partial class Player : MonoBehaviour
         if (haveLight)
         {
             ChangeSpotLightDirection();
-            if (!Isburied(-lightDirection))
+
+
+            // スポットライトの方向を変更
+            if (Input.GetKeyDown(KeyCode.F) && !Isburied(-lightDirection))
             {
-                mouseDelta = Input.GetAxis("Mouse X");
+                lightDirection *= -1;
+                SEManager.Instance.Play(SEPath.LIGHT_SLIDE);
             }
         }
-
-        // スポットライトの方向を変更
-        if (!Isburied(-lightDirection) && Input.GetKeyDown(KeyCode.F))
-        {
-            lightDirection *= -1;
-            SEManager.Instance.Play(SEPath.LIGHT_SLIDE);
-        }
-
         // ライトの持ち替え
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.X))
         {
             haveLight = !haveLight;
 

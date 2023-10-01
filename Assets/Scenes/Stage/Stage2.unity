@@ -709,10 +709,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d0a166a75638894ea9b119f44aa9d4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 642234461}
-  canvasRect: {fileID: 642234462}
-  cursorIconRect: {fileID: 1478483984}
-  animator: {fileID: 1478483985}
 --- !u!4 &178766260
 Transform:
   m_ObjectHideFlags: 0
@@ -1284,6 +1280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_defaultLight: 1
+  shadowRenderer: {fileID: 1071461732}
   gravityScale: 0.05
   m_spotAngle: 80
   debug: 0
@@ -1505,16 +1502,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!223 &642234461 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 1812511035023254349, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}
-  m_PrefabInstance: {fileID: 4801508629259942842}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &642234462 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 9207140964268214946, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}
-  m_PrefabInstance: {fileID: 4801508629259942842}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &674032966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3549,10 +3536,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -3852,16 +3839,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.01
---- !u!224 &1478483984 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5246099841436281961, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}
-  m_PrefabInstance: {fileID: 4801508629259942842}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1478483985 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 1519830219039499542, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}
-  m_PrefabInstance: {fileID: 4801508629259942842}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1553729775
 GameObject:
   m_ObjectHideFlags: 0
@@ -7552,7 +7529,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   filePath: CrearAnimation.gif
-  playGif: 0
 --- !u!114 &1658353995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8048,7 +8024,6 @@ MonoBehaviour:
   stageLayer:
     serializedVersion: 2
     m_Bits: 4096
-  mousePointerScript: {fileID: 178766259}
   deathHeight: -5
   cameraShakeScript: {fileID: 1159709240}
   systemButtonScript: {fileID: 2024708588}
@@ -8059,11 +8034,6 @@ MonoBehaviour:
   pickReach: 0
   spotlight: []
   defaultRadius: 0.1
-  audioFile:
-  - {fileID: 8300000, guid: eae729d7a9c89984b84c0f4e98b51772, type: 3}
-  - {fileID: 8300000, guid: 64b0a2bd15fe83a429705f37f8fa2dea, type: 3}
-  - {fileID: 8300000, guid: c46dd346abe035146bd052c21356b984, type: 3}
-  - {fileID: 8300000, guid: 4eeda0a0e0480c74caf669bfc81505f9, type: 3}
 --- !u!114 &1953887546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8592,7 +8562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4819295c21fec494b8b5a2879da53bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatedImageScript: {fileID: 1658353994}
+  animatedImage: {fileID: 1658353992}
   transition: {fileID: 11400000, guid: 057babd6f13132c449650d99e3c4e99c, type: 2}
   transitionDelay: 4
 --- !u!1001 &1999552823

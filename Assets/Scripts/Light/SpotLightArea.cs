@@ -7,6 +7,7 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private bool m_defaultLight = true;    // ライトか他の光の要素か
 
     [Header("ライトの設定")]
+    [SerializeField] private MeshRenderer shadowRenderer;
     [SerializeField] private float gravityScale;
     [SerializeField] private float m_spotAngle;        // ライトの照らす広さ
     public float SpotAngle
@@ -224,8 +225,7 @@ public class SpotLightArea : MonoBehaviour
         material.SetTexture("_MainTex", shadowTexture);
 
         // MeshRendererにMaterialをセット
-        MeshRenderer renderer = transform.Find("Shadow").GetComponent<MeshRenderer>();
-        renderer.material = material;
+        shadowRenderer.material = material;
 
         // 最後に今回の位置を保存
         oldPosition = lightPosition;

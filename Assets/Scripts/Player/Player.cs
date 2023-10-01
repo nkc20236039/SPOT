@@ -20,8 +20,7 @@ public partial class Player : MonoBehaviour
     private bool isFall;
     private float mouseDelta;               // マウスの移動量
     private Coroutine jumpCoroutine;
-    private SpriteRenderer spotLightSpriteRenderer; // ライトの設置/持っているときのスプライト
-    private bool chengedDirection = false;
+    private SpriteRenderer spotLightSpriteRenderer; // ライトの設置
     private Vector2 playerPosition;
     private bool isRightClick;
     private bool isDied;
@@ -110,34 +109,18 @@ public partial class Player : MonoBehaviour
             if (!Isburied(-lightDirection))
             {
                 mouseDelta = Input.GetAxis("Mouse X");
-
             }
         }
 
-        // スポットライトの方向を調整
-        if (Mathf.Abs(mouseDelta) >= detectionRange && Input.GetMouseButton(1) && !chengedDirection)
+        // スポットライトの方向を変更
+        if (!Isburied(-lightDirection) && Input.GetKeyDown(KeyCode.F))
         {
-            // マウスを動かした方へライトを向けれるようにする
-            int oldLightDirection = lightDirection;
-            lightDirection = (int)Mathf.Sign(mouseDelta);
-            if (oldLightDirection != lightDirection)
-            {
-                SEManager.Instance.Play(SEPath.LIGHT_SLIDE);
-            }
-            chengedDirection = true;
-        }
-
-        // カーソルの表示を変更
-        isRightClick = Input.GetMouseButton(1);
-
-        if (Input.GetMouseButtonUp(1))
-        {
-            // ボタンを離したら再度使えるようにする
-            chengedDirection = false;
+            lightDirection *= -1;
+            SEManager.Instance.Play(SEPath.LIGHT_SLIDE);
         }
 
         // ライトの持ち替え
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             haveLight = !haveLight;
 
@@ -154,9 +137,11 @@ public partial class Player : MonoBehaviour
             }
         }
 
-        // カーソルのアニメーションを設定する
-        if (chengedDirection) { isRightClick = false; }
-        mousePointerScript.SetCursorIcon(isRightClick, lightDirection, !Isburied(-lightDirection));
+        // Rキーでリロード
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            systemButtonScript.Reload(0);
+        }
     }
 
     private void FixedUpdate()

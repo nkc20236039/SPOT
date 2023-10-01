@@ -30,7 +30,6 @@ public partial class Player : MonoBehaviour
     [SerializeField] private Vector2 distanceToLight;
     [SerializeField] private GameObject spotLight;
     [SerializeField] private LayerMask stageLayer;
-    [SerializeField] private MousePointer mousePointerScript;
     [SerializeField] private float deathHeight;
     [SerializeField] private CameraShake cameraShakeScript;
     [SerializeField] private SystemButton systemButtonScript;
@@ -45,7 +44,6 @@ public partial class Player : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spotLightSpriteRenderer = spotLight.GetComponent<SpriteRenderer>();
-        audioSource = GetComponent<AudioSource>();
 
         SEManager.Instance.ChangeBaseVolume(0.5f);
     }
@@ -68,17 +66,6 @@ public partial class Player : MonoBehaviour
         {
             return;
         }
-
-        // カーソルの表示/非表示
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            Cursor.visible = false;
-        }
-
 
         // 左右入力取得
         moveInput.x = Input.GetAxisRaw("Horizontal");

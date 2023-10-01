@@ -459,8 +459,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 642234461}
   canvasRect: {fileID: 642234462}
-  cursorIconRect: {fileID: 1478483984}
-  animator: {fileID: 1478483985}
+  cursorIconRect: {fileID: 0}
+  animator: {fileID: 0}
+  MousePos: {x: 0, y: 0}
 --- !u!4 &178766260
 Transform:
   m_ObjectHideFlags: 0
@@ -3342,16 +3343,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1603543247}
   m_SourcePrefab: {fileID: 100100000, guid: 76eff1383d820624888d507b48412e4b, type: 3}
---- !u!224 &1478483984 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5246099841436281961, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}
-  m_PrefabInstance: {fileID: 4801508629259942842}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1478483985 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 1519830219039499542, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}
-  m_PrefabInstance: {fileID: 4801508629259942842}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1524675934 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8743209081788051725, guid: 76eff1383d820624888d507b48412e4b, type: 3}
@@ -8778,7 +8769,6 @@ MonoBehaviour:
   stageLayer:
     serializedVersion: 2
     m_Bits: 4096
-  mousePointerScript: {fileID: 178766259}
   deathHeight: -5
   cameraShakeScript: {fileID: 1159709240}
   systemButtonScript: {fileID: 2024708588}
@@ -8789,11 +8779,6 @@ MonoBehaviour:
   pickReach: 0
   spotlight: []
   defaultRadius: 0.1
-  audioFile:
-  - {fileID: 8300000, guid: eae729d7a9c89984b84c0f4e98b51772, type: 3}
-  - {fileID: 8300000, guid: 64b0a2bd15fe83a429705f37f8fa2dea, type: 3}
-  - {fileID: 8300000, guid: c46dd346abe035146bd052c21356b984, type: 3}
-  - {fileID: 8300000, guid: 4eeda0a0e0480c74caf669bfc81505f9, type: 3}
 --- !u!114 &1953887546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11067,7 +11052,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 514628797696274239, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fd6b55465b99d143abc17ac1ddddc3d, type: 3}

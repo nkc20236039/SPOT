@@ -25,7 +25,9 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private bool debug;               // デバッグ用
     [SerializeField] private LayerMask m_defaultLayerMask;  //レイヤーマスク
     [SerializeField] private LayerMask m_frameBetweenLayerMask;  // レイヤーマスク
+    [SerializeField] private LayerMask m_lightAreaLayerMask;
     [SerializeField] private GameObject cameraFrame;        // カメラフレームのコライダーを取得する用
+    [SerializeField] private PolygonCollider2D lightAreaCollider;
     [SerializeField] private float reachColDistance;
     [SerializeField] private Player playerScript;
     public Texture2D shadowTexture;
@@ -53,12 +55,11 @@ public class SpotLightArea : MonoBehaviour
 
     void LateUpdate()
     {
-
-
         // コライダーの広さを設定する
         GetComponent<EdgeCollider2D>().points =
             SetReachCollider();
         LightSetting();
+
 
         GameObject[] objectEdges = GameObject.FindGameObjectsWithTag("ObjectEdge");
         List<Vector2> arrivalPoints = new List<Vector2>();      // 影の最終的な到達点
@@ -256,6 +257,14 @@ public class SpotLightArea : MonoBehaviour
         // ライトの終点を取得
         hitASide = Physics2D.Raycast(lightPosition, directionASide, Mathf.Infinity, m_defaultLayerMask);
         hitBSide = Physics2D.Raycast(lightPosition, directionBSide, Mathf.Infinity, m_defaultLayerMask);
+
+        // ライトのチェックコライダー設定
+        lightAreaCollider.points = new Vector2[]
+        {
+            SetReachCollider()[0],
+            SetReachCollider()[1],
+            lightPosition
+        };
 
 
         if (debug)

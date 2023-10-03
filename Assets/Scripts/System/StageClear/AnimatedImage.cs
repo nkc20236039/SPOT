@@ -52,12 +52,18 @@ public class AnimatedImage : MonoBehaviour
             _time = 0.0f;
 
             _image.sprite = _frames[_currentFrame];
-            if (_currentFrame == _frames.Count - 1)
+            if (_currentFrame == _frames.Count - 10)
             {
                 gameObject.SetActive(false);
             }
         }
     }
+
+    private void OnDisable()
+    {
+        _currentFrame = 0;
+    }
+
 
     private static Sprite Texture2DtoSprite(Texture2D tex)
         => Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);

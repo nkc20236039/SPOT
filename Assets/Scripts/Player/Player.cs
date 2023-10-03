@@ -40,6 +40,12 @@ public partial class Player : MonoBehaviour
 
     void Start()
     {
+        // BGMçƒê∂
+        if (!BGMManager.Instance.IsPlaying())
+        {
+            BGMManager.Instance.Play(BGMPath.PEEKABOO);
+        }
+
         Time.timeScale = 1f;
         canPlayerControl = true;
         isPlayed = false;

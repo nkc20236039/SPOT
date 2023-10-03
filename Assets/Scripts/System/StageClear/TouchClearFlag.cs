@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class TouchClearFlag : MonoBehaviour
 {
-    [SerializeField] private GameObject animatedImage;
+    [SerializeField] private GameObject animationCanvas;
+    public static GameObject animatedImage;
     [SerializeField] private TransitionSettings transition;
     [SerializeField] private float transitionDelay;
 
@@ -14,6 +15,10 @@ public class TouchClearFlag : MonoBehaviour
 
     private void Start()
     {
+        if (animatedImage == null)
+        {
+            animatedImage = animationCanvas.transform.Find("Image").gameObject;
+        }
         playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
 
@@ -26,7 +31,7 @@ public class TouchClearFlag : MonoBehaviour
             animatedImage.SetActive(true);
             playerScript.canPlayerControl = false;
             // 音再生
-            SEManager.Instance.Play(SEPath.CREAR_AUDIO);
+            SEManager.Instance.Play(SEPath.CREAR_AUDIO, delay: 0.1f);
 
             // 現在のシーンを取得
             Stage++;
@@ -34,12 +39,5 @@ public class TouchClearFlag : MonoBehaviour
             // トランジション
             TransitionManager.Instance().Transition(sceneName, transition, transitionDelay);
         }
-    }
-
-    IEnumerator PlayClearAnimation()
-    {
-        // 
-
-        yield return null;
     }
 }

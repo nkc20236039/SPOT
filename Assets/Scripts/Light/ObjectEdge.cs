@@ -93,8 +93,6 @@ public class ObjectEdge : MonoBehaviour
         // 現在地がlightAreaレイヤーの中に存在しなければ
         // falseを返す
         if (!Physics2D.OverlapPoint(transform.position, shadowEdgeDate.lightAreaLayerMask)) { return false; }
-        Debug.DrawLine(lightPosition + edgeDirection.normalized * 0.001f,
-            edgePosition - edgeDirection.normalized * 0.001f, Color.yellow);
 
         RaycastHit2D lineHit = Physics2D.Linecast(
             lightPosition + edgeDirection.normalized * 0.001f,
@@ -104,11 +102,11 @@ public class ObjectEdge : MonoBehaviour
 
         if (lineHit)
         {
-            Debug.DrawLine((lightPosition + edgeDirection.normalized) * 0.001f,
-            (edgePosition - edgeDirection.normalized) * 0.001f, Color.yellow);
+            Debug.DrawLine(lightPosition + edgeDirection.normalized * 0.001f,
+                edgePosition - edgeDirection.normalized * 0.001f, Color.yellow);
 
             Vector2 lightNormal = edgeDirection.normalized;
-            if (lineHit.transform.gameObject != gameObject && lightNormal.y > -0.002f)
+            if (lineHit.transform.gameObject != gameObject && (lightNormal.y > -0.002f && lightNormal.y < 0.002f))
             {
                 // 自分以外に当たった時の処理
                 // ちょっとずれた位置から
@@ -122,7 +120,6 @@ public class ObjectEdge : MonoBehaviour
                     Vector2 endPosition = new Vector2(edgePosition.x, lightPosition.y + (gap * direction));
                     if (!Physics2D.Linecast(startPosition, endPosition, shadowEdgeDate.groundLayerMask))
                     {
-                        Debug.DrawLine(startPosition, endPosition, Color.red);
                         return true;
                     }
                 }
@@ -131,8 +128,9 @@ public class ObjectEdge : MonoBehaviour
         }
         else
         {
-            Debug.DrawLine((lightPosition + edgeDirection.normalized) * 0.001f,
-            (edgePosition - edgeDirection.normalized) * 0.001f, Color.red);
+            Debug.DrawLine(lightPosition + edgeDirection.normalized * 0.001f,
+                edgePosition - edgeDirection.normalized * 0.001f, Color.red);
+
             return true;
         }
 

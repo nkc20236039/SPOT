@@ -25,7 +25,6 @@ public class SpotLightArea : MonoBehaviour
     [SerializeField] private bool debug;               // デバッグ用
     [SerializeField] private LayerMask m_defaultLayerMask;  //レイヤーマスク
     [SerializeField] private LayerMask m_frameBetweenLayerMask;  // レイヤーマスク
-    [SerializeField] private LayerMask m_lightAreaLayerMask;
     [SerializeField] private GameObject cameraFrame;        // カメラフレームのコライダーを取得する用
     [SerializeField] private PolygonCollider2D lightAreaCollider;
     [SerializeField] private float reachColDistance;
@@ -80,13 +79,7 @@ public class SpotLightArea : MonoBehaviour
             ObjectEdge objectEdgeScript = objectEdge.GetComponent<ObjectEdge>();
 
             // 角がライトの光に入っているか確かめる
-            Vector2[] lightVertex =
-            {
-                lightPosition,
-                lightPosition + (hitASide.point - lightPosition) * 50,
-                lightPosition + (hitBSide.point - lightPosition) * 50
-            };
-            if (objectEdgeScript.IsExposedToLight(lightVertex[0], lightVertex[1], lightVertex[2]))
+            if (objectEdgeScript.IsExposedToLight(lightPosition))
             {
                 // 情報をライトの相対座標として受け取る
                 // オブジェクトの角情報を取得する
@@ -238,7 +231,8 @@ public class SpotLightArea : MonoBehaviour
     /// </summary>
     private void LightSetting()
     {
-        if (!groundStateScript.IsGround() && !playerScript.haveLight && m_defaultLight)
+        // 重力
+        if (!groundStateScript.IsGround() && (!playerScript.haveLight || playerScript.isWall) && m_defaultLight)
         {
             Vector3 position = transform.position;
             position.y -= gravityScale;
@@ -263,7 +257,7 @@ public class SpotLightArea : MonoBehaviour
         {
             SetReachCollider()[0],
             SetReachCollider()[1],
-            lightPosition
+            Vector2.zero
         };
 
 

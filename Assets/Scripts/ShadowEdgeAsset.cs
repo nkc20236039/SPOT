@@ -6,7 +6,10 @@ using UnityEngine;
 public class ShadowEdgeAsset : ScriptableObject
 {
     public LayerMask indexLayerMask;    // 画面フレームのレイヤーマスク
-    public LayerMask objectLayerMask;          // 
+    public LayerMask objectLayerMask;          //
+    public LayerMask lightAreaLayerMask;
+    public LayerMask groundLayerMask;
     public bool debug = true;
     public float radiusAllow;
+    public float indexDirection = 8;
 }

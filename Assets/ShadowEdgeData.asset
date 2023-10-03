@@ -18,5 +18,12 @@ MonoBehaviour:
   objectLayerMask:
     serializedVersion: 2
     m_Bits: 21504
+  lightAreaLayerMask:
+    serializedVersion: 2
+    m_Bits: 32768
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
   debug: 1
   radiusAllow: 0.05
+  indexDirection: 8

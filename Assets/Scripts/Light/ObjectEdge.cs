@@ -1,8 +1,19 @@
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class ObjectEdge : MonoBehaviour
 {
-    [SerializeField] ShadowEdgeAsset shadowEdgeDate;
+    [SerializeField] private ShadowEdgeAsset shadowEdgeDate;
+    [SerializeField] private float test;
+    Player playerScript;
+
+    private void Start()
+    {
+        playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+    }
+
 
     // 影の情報
     // 0: 影ができる角の位置
@@ -74,130 +85,68 @@ public class ObjectEdge : MonoBehaviour
     /// ライトの光が当たっているかを調べる
     /// </summary>
     /// <returns>当たっていたらtrue</returns>
-    public bool IsExposedToLight(Vector2 lightPoint, Vector2 pointA, Vector2 pointB)
+    public bool IsExposedToLight(Vector2 lightPosition)
     {
-        // https://unity-yuji.xyz/unity%E3%81%A7%E7%89%B9%E5%AE%9A%E3%81%AE%E5%BA%A7%E6%A8%99%E3%81%8Ccollider%E5%86%85%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E3%82%92%E5%88%A4%E5%AE%9A%E3%81%99%E3%82%8B%E3%83%A1%E3%82%BD%E3%83%83/
+        Vector2 edgePosition = transform.position;
+        Vector2 edgeDirection = edgePosition - lightPosition;
+        float edgeDistance = edgeDirection.magnitude;
+        // 現在地がlightAreaレイヤーの中に存在しなければ
+        // falseを返す
+        if (!Physics2D.OverlapPoint(transform.position, shadowEdgeDate.lightAreaLayerMask)) { return false; }
 
+        // ライトからこのオブジェクトに向かってRayを射出
+        RaycastHit2D[] hitPoints = Physics2D.RaycastAll(lightPosition, edgeDirection, edgeDistance, shadowEdgeDate.objectLayerMask);
 
-
-        Vector2 edgePoint = transform.position;
-        Vector2 direction = (edgePoint - lightPoint).normalized * 0.0001f;
-        Vector2 distance = edgePoint - lightPoint;
-
-        // 各辺のベクトルを計算
-        Vector2 pointAToLight = pointA - lightPoint;
-        Vector2 pointBToPointA = pointB - pointA;
-        Vector2 lightToPointB = lightPoint - pointB;
-
-        // 各頂点から指定した座標へのベクトルを計算
-        Vector2 edgeToLight = edgePoint - lightPoint;
-        Vector2 edgeToPointA = edgePoint - pointA;
-        Vector2 edgeToPointB = edgePoint - pointB;
-
-        // 各辺の外積を計算
-        float crossPointAToLight = Vector3.Cross(pointAToLight, edgeToLight).z;
-        float crossPointBToPointA = Vector3.Cross(pointBToPointA, edgeToPointA).z;
-        float crossLightToPointB = Vector3.Cross(lightToPointB, edgeToPointB).z;
-
-        bool plusCross = crossPointAToLight >= 0 && crossPointBToPointA >= 0 && crossLightToPointB >= 0;
-        bool minusCross = crossPointAToLight <= 0 && crossPointBToPointA <= 0 && crossLightToPointB <= 0;
-        if (!(plusCross || minusCross))
+        // 反対を向いていたら反転する
+        if(playerScript.lightDirection < 0)
         {
-            // すべての外積が同じ符号でなければ強制で当たっていないことにする
-            return false;
+            hitPoints.Reverse();
         }
 
-        // ライトからRayを出す
-        RaycastHit2D[] objectHitAll =
-            Physics2D.RaycastAll
-            (
-                lightPoint + direction,
-                direction,
-                distance.magnitude * 2,
-                shadowEdgeDate.objectLayerMask
-            );
 
+        // 最初が自分と同じオブジェクトならtrue
+        if (hitPoints[0].transform.gameObject == gameObject && hitPoints[0].transform.gameObject.layer == gameObject.layer) { return true; }
 
+        List<int> untilHit = new List<int>();
 
-        foreach (RaycastHit2D objectHit in objectHitAll)
+        foreach (RaycastHit2D hit in hitPoints)
         {
             if (shadowEdgeDate.debug)
             {
-                Debug.DrawLine(lightPoint, objectHit.point, Color.red);
+                Debug.DrawLine(lightPosition, hit.point);
             }
 
-            // 自身に当たった時点で終了する
-            if (objectHit.transform.gameObject == this.gameObject)
-            {
-                return true;
-            }
+            Vector2 lightNormal = edgeDirection.normalized;
+            untilHit.Add(hit.transform.gameObject.layer);
 
-
-            // ライトと平行な場合の特別処理
-            Vector2 pointNormal = distance.normalized;
-            if (Mathf.Approximately(0, pointNormal.x))
+            if (hit.transform.gameObject != gameObject && lightNormal.y > -0.002f)
             {
-                float gaps = 0.1f;
+                // 自分以外に当たった時の処理
+                // ちょっとずれた位置から
+                // ライトに繋がるまでにオブジェクトが存在するか
+                float gap = 0.01f;
+                int direction = -1;
                 for (int i = 0; i < 2; i++)
                 {
-                    Vector2 start = objectHit.point;
-                    Vector2 end = edgePoint;
-                    Vector2 hitNormal = (start - end).normalized;
-                    start.x += gaps;
-                    start.y -= hitNormal.y * 0.01f;
-                    end.x += gaps;
-                    end.y += hitNormal.y * 0.01f;
-
-                    RaycastHit2D lineHit = Physics2D.Linecast(start, end, shadowEdgeDate.objectLayerMask);
-
-                    if (!lineHit)
+                    direction *= -1;
+                    Vector2 startPosition = new Vector2(lightPosition.x, lightPosition.y + (gap * direction));
+                    Vector2 endPosition = new Vector2(edgePosition.x, lightPosition.y + (gap * direction));
+                    if (!Physics2D.Linecast(startPosition, endPosition, shadowEdgeDate.groundLayerMask))
                     {
+                        Debug.DrawLine(startPosition, endPosition, Color.red);
                         return true;
                     }
-
-                    gaps *= -1;
                 }
             }
-            else if (Mathf.Approximately(0, pointNormal.y))
+            else
             {
-                float gaps = 0.1f;
-                for (int i = 0; i < 2; i++)
-                {
-                    Vector2 start = objectHit.point;
-                    Vector2 end = edgePoint;
-                    Vector2 hitNormal = (start - end).normalized;
-                    start.y += gaps;
-                    start.x -= hitNormal.x * 0.01f;
-                    end.y += gaps;
-                    end.x += hitNormal.x * 0.01f;
-
-                    RaycastHit2D lineHit = Physics2D.Linecast(start, end, shadowEdgeDate.objectLayerMask);
-
-                    if (!lineHit)
-                    {
-                        return true;
-                    }
-
-                    gaps *= -1;
-                }
+                // これまでに当たったオブジェクトの中に
+                // グランドがなければtrue
+                return !untilHit.Contains(12);
             }
-
-
-            //
-
-            // ヒットしたオブジェクトの中に
-            // ObjectEdge以外が存在する
-            // falseを返す
-            if (objectHit.transform.gameObject.tag != gameObject.tag)
-            {
-                return false;
-            }
-
         }
 
-
-        // 当たったオブジェクトが同じオブジェクトだったらtrue
-        return true;
+        return false;
     }
 
 }

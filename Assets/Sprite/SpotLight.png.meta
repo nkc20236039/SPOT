@@ -124,7 +124,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a1e174ddbd66338488c4158d7892c7d3
+      spriteID: cf0ec57b4266f3343adcb6d588c6df29
       internalID: -2096410146
       vertices: []
       indices: 
@@ -145,8 +145,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 22e6f5fc1bdcdbf4890e7a38d7f38c92
+      spriteID: d428ce57a59b48c479aea28ee9a7ff9f
       internalID: 2002041174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpotLight_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c127d0abda00414eb0bedebab9cb58c
+      internalID: 672136838
       vertices: []
       indices: 
       edges: []
@@ -164,6 +185,7 @@ TextureImporter:
     nameFileIdTable:
       SpotLight_0: -2096410146
       SpotLight_1: 2002041174
+      SpotLight_2: 672136838
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

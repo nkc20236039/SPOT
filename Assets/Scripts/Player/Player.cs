@@ -1,5 +1,6 @@
 using KanKikuchi.AudioManager;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public partial class Player : MonoBehaviour
 {
@@ -23,7 +24,9 @@ public partial class Player : MonoBehaviour
     private SpriteRenderer spotLightSpriteRenderer; // ライトの設置
     private Vector2 playerPosition;
     private bool isRightClick;
-    private bool isDied;
+    private bool isPlayed;
+    private Rigidbody2D lightRigidbody;
+    public bool isWall;
 
     [SerializeField] private Sprite[] spotLightSprite;
     [SerializeField] private float detectionRange;
@@ -33,17 +36,20 @@ public partial class Player : MonoBehaviour
     [SerializeField] private float deathHeight;
     [SerializeField] private CameraShake cameraShakeScript;
     [SerializeField] private SystemButton systemButtonScript;
+    [SerializeField] private LayerMask lightAreaLayerMask;
+    [SerializeField] private GameObject errorCameraPrefab;
 
     void Start()
     {
         Time.timeScale = 1f;
         canPlayerControl = true;
-        isDied = false;
+        isPlayed = false;
 
         groundStateScript = GetComponent<GroundState>();
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spotLightSpriteRenderer = spotLight.GetComponent<SpriteRenderer>();
+        lightRigidbody = spotLight.GetComponent<Rigidbody2D>();
 
         SEManager.Instance.ChangeBaseVolume(0.5f);
     }
@@ -51,13 +57,16 @@ public partial class Player : MonoBehaviour
     void Update()
     {
         playerPosition = transform.position;
-        // 落下した時
-        if (playerPosition.y < deathHeight && !isDied)
+
+        bool isLightOver = !IsLightInside();
+        bool isfallOut = playerPosition.y < deathHeight;
+        // 死亡演出
+        if ((isLightOver || isfallOut) && !isPlayed)
         {
             cameraShakeScript.Shake(0.25f, 0.1f);
             SEManager.Instance.Play(SEPath.DEATH);
             systemButtonScript.Reload(1f);
-            isDied = true;
+            isPlayed = true;
         }
 
 
@@ -92,15 +101,33 @@ public partial class Player : MonoBehaviour
         // ライトの移動場所を設定
         if (haveLight)
         {
-            ChangeSpotLightDirection();
-
-
+            Vector2 checkLightPosition
+            = new Vector2(
+                Mathf.Abs(distanceToLight.x)
+                * -lightDirection,
+                distanceToLight.y
+                );
+            Vector2 objectHitPosition
+            = playerPosition
+            - checkLightPosition;
             // スポットライトの方向を変更
-            if (Input.GetKeyDown(KeyCode.F) && !Isburied(-lightDirection))
+            if (Input.GetKeyDown(KeyCode.F) && !Isburied(objectHitPosition))
             {
                 lightDirection *= -1;
                 SEManager.Instance.Play(SEPath.LIGHT_SLIDE);
             }
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                GameObject summonedPrefab = Instantiate(errorCameraPrefab, objectHitPosition, Quaternion.identity);
+                Vector3 lightScale = spotLight.transform.localScale;
+                lightScale.x = Mathf.Abs(lightScale.x);
+                lightScale.x *= -lightDirection;
+                summonedPrefab.transform.localScale = lightScale;
+                Destroy(summonedPrefab, 1);
+            }
+
+            // ライトの向きや位置を決定
+            ChangeSpotLightDirection();
         }
         // ライトの持ち替え
         if (Input.GetKeyDown(KeyCode.X))
@@ -148,5 +175,15 @@ public partial class Player : MonoBehaviour
     private void PlayerInit()
     {
         moveInput = Vector2.zero;
+    }
+
+    private bool IsLightInside()
+    {
+        // 現在地がlightAreaレイヤーの中に存在しなければ
+        // falseを返す
+        if (!Physics2D.OverlapPoint(transform.position, lightAreaLayerMask)) { return false; }
+
+        return !Physics2D.Linecast(transform.position, spotLight.transform.position, stageLayer);
+
     }
 }

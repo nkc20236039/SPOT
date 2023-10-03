@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public partial class Player
 {
@@ -11,8 +12,8 @@ public partial class Player
 
     [Header("ライトに関わる変数")]
     [SerializeField] private float pickReach;       // 拾える範囲
-    [SerializeField] private GameObject[] spotlight;// シーンに存在するスポットライト
     [SerializeField] private float defaultRadius;   // ライトの埋まり防止の普通の範囲
+    [SerializeField] private Vector2 lightSize;
 
     private void Movement()
     {
@@ -68,61 +69,53 @@ public partial class Player
 
     private void ChangeSpotLightDirection()
     {
-        Transform lightShadow = spotLight.transform.Find("Shadow");
-
-        Vector2 spotLightPosition = lightShadow.position;
+        // 力を取得
+        Vector2 changeLightPosition
+            = new Vector2(
+                Mathf.Abs(distanceToLight.x)
+                * lightDirection,
+                distanceToLight.y
+                );
+        Vector2 objectHitPosition
+            = playerPosition
+            - changeLightPosition;
 
         // ライトがある場所にオブジェクトがないか
+        RaycastHit2D lightObjectivePosition = Isburied(objectHitPosition);
 
-
-        // ライトの位置を変更
-        if (!Isburied(lightDirection))
+        if (!lightObjectivePosition)
         {
-            spotLight.transform.position =
-            Vector3.MoveTowards(
-                spotLight.transform.position,
-                playerPosition + -distanceToLight * lightDirection,
-                1
-                );
+            isWall = false;
+            spotLight.transform.position = objectHitPosition;
+        }
+        else
+        {
+            isWall = true;
         }
 
         // ライトの向きを変更
         Vector3 spotLightScale = spotLight.transform.localScale;
         // 実効値を求める
-        distanceToLight.y = Mathf.Abs(distanceToLight.y);
         spotLightScale.x = Mathf.Abs(spotLightScale.x);
         // 入力された方向に切り替える
-        distanceToLight.y *= -lightDirection;
         spotLightScale.x *= lightDirection;
         spotLight.transform.localScale = spotLightScale;
     }
 
-    private bool Isburied(int direction)
+    private RaycastHit2D Isburied(Vector2 position)
     {
-        return Physics2D.CircleCast(
-                playerPosition,
-                defaultRadius,
-                distanceToLight * direction,
-                -distanceToLight.magnitude,
+        return Physics2D.BoxCast(
+                position,
+                lightSize,
+                0,
+                Vector2.zero,
+                0,
                 stageLayer
                 );
     }
 
-
-
-    private void ChangeSpotLight(int lightNumber)
+    private void OnDrawGizmos()
     {
-        lightNumber--;
-        if (lightNumber < spotlight.Length)
-        {
-            foreach (GameObject light in spotlight)
-            {
-                if (light.activeSelf)
-                {
-                    light.SetActive(false);
-                }
-            }
-            spotlight[lightNumber].SetActive(true);
-        }
+        Gizmos.DrawWireCube(spotLight.transform.position, lightSize);
     }
 }

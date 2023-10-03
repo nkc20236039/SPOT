@@ -93,33 +93,22 @@ public class ObjectEdge : MonoBehaviour
         // 現在地がlightAreaレイヤーの中に存在しなければ
         // falseを返す
         if (!Physics2D.OverlapPoint(transform.position, shadowEdgeDate.lightAreaLayerMask)) { return false; }
+        Debug.DrawLine(lightPosition + edgeDirection.normalized * 0.001f,
+            edgePosition - edgeDirection.normalized * 0.001f, Color.yellow);
 
-        // ライトからこのオブジェクトに向かってRayを射出
-        RaycastHit2D[] hitPoints = Physics2D.RaycastAll(lightPosition, edgeDirection, edgeDistance, shadowEdgeDate.objectLayerMask);
+        RaycastHit2D lineHit = Physics2D.Linecast(
+            lightPosition + edgeDirection.normalized * 0.001f,
+            edgePosition - edgeDirection.normalized * 0.001f,
+            shadowEdgeDate.groundLayerMask
+            );
 
-        // 反対を向いていたら反転する
-        if(playerScript.lightDirection < 0)
+        if (lineHit)
         {
-            hitPoints.Reverse();
-        }
-
-
-        // 最初が自分と同じオブジェクトならtrue
-        if (hitPoints[0].transform.gameObject == gameObject && hitPoints[0].transform.gameObject.layer == gameObject.layer) { return true; }
-
-        List<int> untilHit = new List<int>();
-
-        foreach (RaycastHit2D hit in hitPoints)
-        {
-            if (shadowEdgeDate.debug)
-            {
-                Debug.DrawLine(lightPosition, hit.point);
-            }
+            Debug.DrawLine((lightPosition + edgeDirection.normalized) * 0.001f,
+            (edgePosition - edgeDirection.normalized) * 0.001f, Color.yellow);
 
             Vector2 lightNormal = edgeDirection.normalized;
-            untilHit.Add(hit.transform.gameObject.layer);
-
-            if (hit.transform.gameObject != gameObject && lightNormal.y > -0.002f)
+            if (lineHit.transform.gameObject != gameObject && lightNormal.y > -0.002f)
             {
                 // 自分以外に当たった時の処理
                 // ちょっとずれた位置から
@@ -137,14 +126,17 @@ public class ObjectEdge : MonoBehaviour
                         return true;
                     }
                 }
-            }
-            else
-            {
-                // これまでに当たったオブジェクトの中に
-                // グランドがなければtrue
-                return !untilHit.Contains(12);
+
             }
         }
+        else
+        {
+            Debug.DrawLine((lightPosition + edgeDirection.normalized) * 0.001f,
+            (edgePosition - edgeDirection.normalized) * 0.001f, Color.red);
+            return true;
+        }
+
+
 
         return false;
     }

@@ -5,7 +5,6 @@ using UnityEngine.Rendering;
 public partial class Player : MonoBehaviour
 {
     public int lightDirection { get; private set; } = 1;
-    public Vector2 lightCallPosition;
     public bool haveLight = true;                 // ライトの所持状態
     public bool canPlayerControl = true;
 
@@ -124,6 +123,9 @@ public partial class Player : MonoBehaviour
                 lightScale.x *= -lightDirection;
                 summonedPrefab.transform.localScale = lightScale;
                 Destroy(summonedPrefab, 1);
+
+                // SE再生
+                SEManager.Instance.Play(SEPath.FLIP_ERROR, 0.7f);
             }
 
             // ライトの向きや位置を決定

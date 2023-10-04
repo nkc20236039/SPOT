@@ -15,10 +15,7 @@ public class TouchClearFlag : MonoBehaviour
 
     private void Start()
     {
-        if (animatedImage == null)
-        {
-            animatedImage = animationCanvas.transform.Find("Image").gameObject;
-        }
+
         playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
 
@@ -27,12 +24,13 @@ public class TouchClearFlag : MonoBehaviour
         // 旗にプレイヤーが触れたら
         if (collision.gameObject.tag == "Player")
         {
+            playerScript.isPlayed = true;
             // アニメーション表示キャンバスのImageを有効化
             animatedImage.SetActive(true);
             playerScript.canPlayerControl = false;
             // 音再生
-            SEManager.Instance.Play(SEPath.CREAR_AUDIO, delay: 0.1f);
-
+            SEManager.Instance.Play(SEPath.CREAR_AUDIO, delay: 0.2f);
+            BGMManager.Instance.Pause();
             // 現在のシーンを取得
             Stage++;
             string sceneName = "Stage" + Stage.ToString();

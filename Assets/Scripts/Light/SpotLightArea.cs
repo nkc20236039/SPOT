@@ -235,7 +235,7 @@ public class SpotLightArea : MonoBehaviour
         if (!groundStateScript.IsGround() && (!playerScript.haveLight || playerScript.isWall) && m_defaultLight)
         {
             Vector3 position = transform.position;
-            position.y -= gravityScale;
+            position.y -= gravityScale * Time.deltaTime;
             transform.position = position;
         }
 

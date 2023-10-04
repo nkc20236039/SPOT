@@ -1,6 +1,6 @@
 using KanKikuchi.AudioManager;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public partial class Player : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public partial class Player : MonoBehaviour
     private SpriteRenderer spotLightSpriteRenderer; // ライトの設置
     private Vector2 playerPosition;
     private bool isRightClick;
-    private bool isPlayed;
+    public bool isPlayed;
     private Rigidbody2D lightRigidbody;
     public bool isWall;
 
@@ -41,10 +41,8 @@ public partial class Player : MonoBehaviour
     void Start()
     {
         // BGM再生
-        if (!BGMManager.Instance.IsPlaying())
-        {
-            BGMManager.Instance.Play(BGMPath.PEEKABOO);
-        }
+
+        BGMManager.Instance.UnPause();
 
         Time.timeScale = 1f;
         canPlayerControl = true;
@@ -72,6 +70,15 @@ public partial class Player : MonoBehaviour
             SEManager.Instance.Play(SEPath.DEATH);
             systemButtonScript.Reload(1f);
             isPlayed = true;
+        }
+
+        // コマンド
+        if (Input.GetKey(KeyCode.Backspace) && Input.GetKey(KeyCode.RightShift))
+        {
+            SceneManager.LoadScene("Stage1");
+            BGMManager.Instance.Stop();
+            BGMManager.Instance.Play(BGMPath.PEEKABOO, 0.25f);
+            TouchClearFlag.Stage = 1;
         }
 
 
@@ -138,7 +145,7 @@ public partial class Player : MonoBehaviour
             ChangeSpotLightDirection();
         }
         // ライトの持ち替え
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             haveLight = !haveLight;
 

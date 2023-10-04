@@ -40,13 +40,13 @@ public partial class Player
 
         if (isJump)
         {
-            velocity.y = m_jumpForce;
+            velocity.y = m_jumpForce * Time.deltaTime;
             isJump = false;
         }
 
         if (isFall)
         {
-            velocity.y -= m_gravityScale;
+            velocity.y -= m_gravityScale * Time.deltaTime;
             isFall = false;
         }
 

@@ -1366,7 +1366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_defaultLight: 1
   shadowRenderer: {fileID: 1071461732}
-  gravityScale: 0.05
+  gravityScale: 2
   m_spotAngle: 80
   debug: 0
   m_defaultLayerMask:
@@ -9253,6 +9253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   haveLight: 1
   canPlayerControl: 1
+  isPlayed: 0
   isWall: 0
   spotLightSprite:
   - {fileID: -2096410146, guid: a3caae0deb6da8f43a2c3ab70b5c48d0, type: 3}
@@ -9271,8 +9272,8 @@ MonoBehaviour:
     m_Bits: 32768
   errorCameraPrefab: {fileID: 1362022561896724662, guid: 5ea84f3a6e86b814dbc2df4b536eb190, type: 3}
   m_speed: 230
-  m_jumpForce: 12
-  m_gravityScale: 1
+  m_jumpForce: 550
+  m_gravityScale: 50
   airborneTime: 0.07
   pickReach: 0
   defaultRadius: 0.1

@@ -1149,7 +1149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_defaultLight: 1
   shadowRenderer: {fileID: 1071461732}
-  gravityScale: 0.05
+  gravityScale: 2
   m_spotAngle: 80
   debug: 0
   m_defaultLayerMask:
@@ -1370,11 +1370,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1973,11 +1973,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2097,11 +2097,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2718,7 +2718,7 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: 0, y: -1, z: 0}
+  - first: {x: -1, y: -1, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 27
@@ -8799,11 +8799,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8287452953501759971, guid: 76eff1383d820624888d507b48412e4b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9020,6 +9020,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   haveLight: 1
   canPlayerControl: 1
+  isPlayed: 0
   isWall: 0
   spotLightSprite:
   - {fileID: -2096410146, guid: a3caae0deb6da8f43a2c3ab70b5c48d0, type: 3}
@@ -9038,8 +9039,8 @@ MonoBehaviour:
     m_Bits: 32768
   errorCameraPrefab: {fileID: 1362022561896724662, guid: 5ea84f3a6e86b814dbc2df4b536eb190, type: 3}
   m_speed: 230
-  m_jumpForce: 12
-  m_gravityScale: 1
+  m_jumpForce: 550
+  m_gravityScale: 50
   airborneTime: 0.07
   pickReach: 0
   defaultRadius: 0.1

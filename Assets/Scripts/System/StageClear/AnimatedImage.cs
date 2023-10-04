@@ -1,3 +1,4 @@
+using KanKikuchi.AudioManager;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -54,12 +55,13 @@ public class AnimatedImage : MonoBehaviour
             _image.sprite = _frames[_currentFrame];
             if (_currentFrame == _frames.Count - 10)
             {
+                _currentFrame = 0;
                 gameObject.SetActive(false);
             }
         }
     }
 
-    private void OnDisable()
+    private void OnEnable()
     {
         _currentFrame = 0;
     }

@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Stage/Stage6.unity
     guid: f46f5a317ab62dd42aeb7bce959bd6e0
+  - enabled: 0
+    path: Assets/EasyTransitions/Demo/TransitionDemo.unity
+    guid: 571da65939e9e684088d97ec020ffb69
   m_configObjects: {}

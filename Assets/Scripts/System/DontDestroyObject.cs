@@ -22,7 +22,7 @@ public class DontDestroyObject : MonoBehaviour
         TouchClearFlag.animatedImage = transform.Find("Image").gameObject;
         if (!BGMManager.Instance.IsPlaying())
         {
-            BGMManager.Instance.Play(BGMPath.PEEKABOO, 0.25f);
+            BGMManager.Instance.Play(BGMPath.PEEKABOO, 0f);
         }
 
         // 子オブジェクト取得
